@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="titel_size">26sp</dimen>
+    <dimen name="button_text_size">20sp</dimen>
+    <dimen name="second_screen_text_size">18sp</dimen>
+</resources>
