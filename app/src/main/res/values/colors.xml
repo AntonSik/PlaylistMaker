@@ -5,4 +5,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="YP_blue">#3772E7</color>
     <color name="YP_Light_Gray">#E6E8EB</color>
+    <color name="YP_Dark_Blue">#3700B3</color>
 </resources>
