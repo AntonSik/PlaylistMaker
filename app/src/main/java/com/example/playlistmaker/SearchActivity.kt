@@ -19,11 +19,11 @@ class SearchActivity : AppCompatActivity() {
         val imageArrow = findViewById<ImageView>(R.id.arrow2)
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
 
-        imageArrow.setOnClickListener{
-           finish()
+        imageArrow.setOnClickListener {
+            finish()
         }
 
-        clearButton.setOnClickListener{
+        clearButton.setOnClickListener {
             inputEditText.setText("")
         }
 // EmptyTextWartcher
@@ -35,7 +35,8 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val input = p0.toString()
-                clearButton.visibility = clearButtonVisibility(input)
+
+                clearButton.visibility = clearButtonVisibility(p0)
 
             }
 
@@ -62,15 +63,17 @@ class SearchActivity : AppCompatActivity() {
 
 
     }
-    companion object {
-        const val INPUT_TEXT = "INPUT_EDIT"
-        const val VALUE = " "
+
+    private fun clearButtonVisibility(s: CharSequence?): Int {
+         return if (s.isNullOrEmpty()) {
+             View.GONE
+        } else {
+             View.VISIBLE
+        }
     }
-}
-private fun clearButtonVisibility(s: CharSequence?): Int {
-    return if (s.isNullOrEmpty()) {
-        View.GONE
-    } else {
-        View.VISIBLE
+
+    companion object {
+        private const val INPUT_TEXT = "INPUT_EDIT"
+        private const val VALUE = " "
     }
 }

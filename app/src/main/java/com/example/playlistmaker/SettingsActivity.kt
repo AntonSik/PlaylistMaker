@@ -22,15 +22,14 @@ class SettingsActivity : AppCompatActivity() {
         }
         shareField.setOnClickListener {
 
-            val shareIntent = Intent(Intent.ACTION_SEND)
-            shareIntent.setType("text/plain")
-            shareIntent.setPackage("org.telegram.messenger")
-            shareIntent.putExtra(Intent.EXTRA_TEXT,getString(R.string.shareMessage))
+            val shareIntent = Intent(Intent.ACTION_SEND_MULTIPLE)
+            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.shareMessage))
+            shareIntent.setType("*/*")
             startActivity(shareIntent)
         }
         supportField.setOnClickListener {
             val supIntent = Intent(Intent.ACTION_SENDTO)
-            supIntent.data = Uri.parse("mailto:")
+                supIntent.data = Uri.parse("mailto:")
             supIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.myEmail)))
             supIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.themeofMessage))
             supIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.message))
