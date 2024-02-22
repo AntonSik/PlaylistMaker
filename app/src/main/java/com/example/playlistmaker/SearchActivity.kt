@@ -10,7 +10,7 @@ import android.widget.ImageView
 
 
 class SearchActivity : AppCompatActivity() {
-
+    private var savedText = VALUE
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -29,19 +29,19 @@ class SearchActivity : AppCompatActivity() {
 // EmptyTextWartcher
 
         val textWatcher = object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 //empty
             }
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                val input = p0.toString()
+            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
-                clearButton.visibility = clearButtonVisibility(p0)
+
+                clearButton.visibility = clearButtonVisibility(s)
 
             }
 
-            override fun afterTextChanged(p0: Editable?) {
-                //empty
+            override fun afterTextChanged(s: Editable?) {
+                savedText = s.toString()
             }
 
         }
@@ -51,7 +51,6 @@ class SearchActivity : AppCompatActivity() {
         inputEditText.setText(savedText)
     }
 
-    private var savedText = VALUE
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(INPUT_TEXT, savedText)
@@ -65,10 +64,10 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
-         return if (s.isNullOrEmpty()) {
-             View.GONE
+        return if (s.isNullOrEmpty()) {
+            View.GONE
         } else {
-             View.VISIBLE
+            View.VISIBLE
         }
     }
 

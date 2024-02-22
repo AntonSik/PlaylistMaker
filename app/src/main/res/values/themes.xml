@@ -13,7 +13,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <item name="android:background">?attr/colorSecondary</item>
+
     </style>
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />

@@ -52,7 +52,8 @@
             android:drawablePadding="10dp"
             android:hint="@string/input_hint"
             android:inputType="text"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:textIsSelectable="true"/>
 
         <ImageView
             android:id="@+id/clearIcon"
