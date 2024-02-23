@@ -47,6 +47,7 @@
         <EditText
             android:id="@+id/inputEditText"
             style = "@style/inputSearchEditStyle"
+            android:theme="@style/MyTheme"
             android:background="@drawable/round_corner_edit_text"
             android:drawableStart="@drawable/light_mode"
             android:drawablePadding="10dp"

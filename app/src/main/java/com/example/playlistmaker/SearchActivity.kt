@@ -73,6 +73,6 @@ class SearchActivity : AppCompatActivity() {
 
     companion object {
         private const val INPUT_TEXT = "INPUT_EDIT"
-        private const val VALUE = " "
+        private const val VALUE = ""
     }
 }
