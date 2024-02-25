@@ -10,14 +10,18 @@ import android.widget.ImageView
 
 
 class SearchActivity : AppCompatActivity() {
-    private var savedText = VALUE
+    private var savedText: String? = null
+    private lateinit var inputEditText: EditText
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        val inputEditText = findViewById<EditText>(R.id.inputEditText)
+        inputEditText = findViewById(R.id.inputEditText)
         val imageArrow = findViewById<ImageView>(R.id.arrow2)
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
+
+        savedText = savedInstanceState?.getString(INPUT_TEXT)
+
 
         imageArrow.setOnClickListener {
             finish()
@@ -34,21 +38,17 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-
+                savedText = s.toString()
                 clearButton.visibility = clearButtonVisibility(s)
 
             }
 
-            override fun afterTextChanged(s: Editable?) {
-                savedText = s.toString()
-            }
+            override fun afterTextChanged(s: Editable?) {}
 
         }
 
         inputEditText.addTextChangedListener(textWatcher)
 
-        inputEditText.setText(savedText)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -58,7 +58,8 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        savedText = savedInstanceState.getString(INPUT_TEXT, VALUE)
+        savedText = savedInstanceState.getString(INPUT_TEXT)
+        inputEditText.setText(savedText)
 
 
     }
@@ -73,6 +74,5 @@ class SearchActivity : AppCompatActivity() {
 
     companion object {
         private const val INPUT_TEXT = "INPUT_EDIT"
-        private const val VALUE = ""
     }
 }
