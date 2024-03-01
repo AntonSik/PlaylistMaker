@@ -3,4 +3,6 @@
     <dimen name="titel_size">26sp</dimen>
     <dimen name="button_text_size">20sp</dimen>
     <dimen name="second_screen_text_size">18sp</dimen>
+    <dimen name="track_description_and_timing_size">11sp</dimen>
+    <dimen name="track_name_size">16sp</dimen>
 </resources>

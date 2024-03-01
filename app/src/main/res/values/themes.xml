@@ -8,7 +8,7 @@
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/white</item>
-        <item name="colorSecondaryVariant">@color/YP_Light_Gray</item>
+        <item name="colorSecondaryVariant">@color/just_gray</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
@@ -16,8 +16,13 @@
 
 
     </style>
+
     <style name="MyTheme" parent="Base.Theme.PlaylistMaker">
         <item name="colorSecondary">@color/YP_blue</item>
+    </style>
+
+    <style name="ThemeOfTrackDescription" parent="Base.Theme.PlaylistMaker">
+        <item name="colorOnSecondary">@color/just_gray</item>
     </style>
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />
