@@ -19,6 +19,7 @@
 
     <style name="MyTheme" parent="Base.Theme.PlaylistMaker">
         <item name="colorSecondary">@color/YP_blue</item>
+        <item name="colorOnSecondary">@color/YP_Light_Gray</item>
     </style>
 
     <style name="ThemeOfTrackDescription" parent="Base.Theme.PlaylistMaker">

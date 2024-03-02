@@ -49,6 +49,7 @@
             style="@style/inputSearchEditStyle"
             android:background="@drawable/round_corner_edit_text"
             android:drawableStart="@drawable/light_mode"
+            android:backgroundTint="?attr/colorOnSecondary"
             android:drawablePadding="10dp"
             android:hint="@string/input_hint"
             android:inputType="text"
