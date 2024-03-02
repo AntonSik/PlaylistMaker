@@ -27,37 +27,39 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textSize="@dimen/track_name_size"
             android:textColor="?attr/colorOnSecondary"
+            android:textSize="@dimen/track_name_size"
             tools:text="Название трека" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
-                android:theme="@style/ThemeOfTrackDescription"
                 android:id="@+id/tv_author"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
-                android:textSize="@dimen/track_description_and_timing_size"
+                android:layout_weight="1"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="?attr/colorOnSecondary"
+                android:textSize="@dimen/track_description_and_timing_size"
+                android:theme="@style/ThemeOfTrackDescription"
                 app:drawableEndCompat="@drawable/dot_icon"
-                tools:text="Исполнитель fffffdffffffffffffffffffffffffffffffffffffff"/>
+                tools:text="Исполнитель ffffffffffffffffddddddddddddddddddddddddddffffffffffffffff" />
 
             <TextView
-                android:theme="@style/ThemeOfTrackDescription"
                 android:id="@+id/tv_timing"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
+                android:gravity="end"
                 android:maxLines="1"
-                android:textSize="@dimen/track_description_and_timing_size"
                 android:textColor="?attr/colorOnSecondary"
+                android:textSize="@dimen/track_description_and_timing_size"
+                android:theme="@style/ThemeOfTrackDescription"
                 tools:text="4:20" />
 
         </LinearLayout>
