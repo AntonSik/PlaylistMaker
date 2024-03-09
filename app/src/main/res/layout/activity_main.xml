@@ -18,20 +18,20 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="?attr/colorPrimary"
             android:paddingStart="14dp"
             android:paddingTop="9dp"
             android:text="@string/app_name"
             android:textColor="@color/white"
-            android:textSize="@dimen/titel_size"
-            android:background="?attr/colorPrimary"/>
+            android:textSize="@dimen/titel_size" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="14dp"
-        android:orientation="vertical"
-        android:background="?attr/colorPrimary">
+        android:background="?attr/colorPrimary"
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/search"
