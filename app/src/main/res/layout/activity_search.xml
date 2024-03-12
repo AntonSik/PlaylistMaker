@@ -55,6 +55,8 @@
             android:inputType="text"
             android:maxLines="1"
             android:textIsSelectable="true"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             android:theme="@style/MyTheme" />
 
         <ImageView
