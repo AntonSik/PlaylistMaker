@@ -1,11 +1,13 @@
 package com.example.playlistmaker
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -34,6 +36,7 @@ class SearchActivity : AppCompatActivity() {
     lateinit var trackList: ArrayList<Track>
     lateinit var trackAdapter: TrackAdapter
     private lateinit var placeholderMessage: TextView
+    private lateinit var placeholderMessageExtra: TextView
     private lateinit var placeholderImage: ImageView
     private lateinit var placeholderButton: Button
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +48,7 @@ class SearchActivity : AppCompatActivity() {
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
         val recyclerView = findViewById<RecyclerView>(R.id.rv_recycleView)
         placeholderMessage = findViewById(R.id.tv_placeholderMessage)
+        placeholderMessageExtra = findViewById(R.id.tv_placeholderMessageExtra)
         placeholderImage = findViewById(R.id.iv_placeholderImage)
         placeholderButton = findViewById(R.id.b_update_btn)
 
@@ -57,6 +61,10 @@ class SearchActivity : AppCompatActivity() {
 
         clearButton.setOnClickListener {
             inputEditText.setText("")
+            trackList.clear()
+            trackAdapter.notifyDataSetChanged()
+            val inputMM = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager  //константа для скрытия клавиатуры
+            inputMM.hideSoftInputFromWindow(inputEditText.windowToken,0)
         }
 // EmptyTextWartcher
 
@@ -91,6 +99,9 @@ class SearchActivity : AppCompatActivity() {
                 ) {
                     if (response.code() == 200) {
                         trackList.clear()
+                        placeholderButton.visibility = View.GONE
+                        placeholderImage.visibility = View.GONE
+                        placeholderMessageExtra.visibility = View.GONE
 
                         if (response.body()?.results?.isNotEmpty() == true) {
                             trackList.addAll(response.body()?.results!!)
@@ -100,6 +111,7 @@ class SearchActivity : AppCompatActivity() {
                         if (trackList.isEmpty()) {
                             showMessage(getString(R.string.not_found), "")
                             placeholderImage.setImageResource(R.drawable.light_mode_error)
+                            placeholderImage.visibility = View.VISIBLE
                             Log.d(TAG, "this case, incorrect request")
                         } else {
                             showMessage("", "")
@@ -118,6 +130,8 @@ class SearchActivity : AppCompatActivity() {
                     showMessage(getString(R.string.no_internet_connection), t.message.toString())
                     placeholderImage.setImageResource(R.drawable.light_mode_no_connection)
                     placeholderImage.visibility = View.VISIBLE
+                    placeholderMessageExtra.visibility = View.VISIBLE
+                    placeholderMessageExtra.setText(R.string.no_internet_connection_extra)
                     placeholderButton.visibility = View.VISIBLE
                     placeholderButton.setOnClickListener { tracksSearch() }
                     Log.e(TAG,"4xx case")

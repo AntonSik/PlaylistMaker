@@ -18,4 +18,7 @@
     <style name="ThemeOfTrackDescription" parent="Base.Theme.PlaylistMaker">
         <item name="colorOnSecondary">@color/white</item>
     </style>
+    <style name="Update_btn_theme" parent="Base.Theme.PlaylistMaker">
+        <item name="colorOnSecondary">@color/white</item>
+    </style>
 </resources>

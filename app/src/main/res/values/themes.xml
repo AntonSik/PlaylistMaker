@@ -25,6 +25,9 @@
     <style name="ThemeOfTrackDescription" parent="Base.Theme.PlaylistMaker">
         <item name="colorOnSecondary">@color/just_gray</item>
     </style>
+    <style name="Update_btn_theme" parent="Base.Theme.PlaylistMaker">
+        <item name="colorOnSecondary">@color/YP_black</item>
+    </style>
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />
 </resources>
