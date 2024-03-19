@@ -14,4 +14,8 @@
     <string name="shareMessage">"https://practicum.yandex.ru/profile/android-developer/"</string>
     <string name="input_hint">Поиск</string>
     <string name="urlOfferta">"https://yandex.ru/legal/practicum_offer/"</string>
+    <string name="not_found">Ничего не нашлось</string>
+    <string name="no_internet_connection">Проблемы со связью Загрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="update">Обновить</string>
+
 </resources>
