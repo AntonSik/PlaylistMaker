@@ -48,14 +48,14 @@
                 android:textSize="@dimen/track_description_and_timing_size"
                 android:theme="@style/ThemeOfTrackDescription"
                 app:drawableEndCompat="@drawable/dot_icon"
-                tools:text="Исполнитель ffffffffffffffffddddddddddddddddddddddddddffffffffffffffff" />
+                tools:text="Исполнитель ffffffdddddddfffffffffffffffffffffffffffffffgggffffff" />
 
             <TextView
                 android:id="@+id/tv_timing"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
-                android:gravity="end"
+                android:gravity="start"
                 android:maxLines="1"
                 android:textColor="?attr/colorOnSecondary"
                 android:textSize="@dimen/track_description_and_timing_size"

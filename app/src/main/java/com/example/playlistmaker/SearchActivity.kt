@@ -63,8 +63,9 @@ class SearchActivity : AppCompatActivity() {
             inputEditText.setText("")
             trackList.clear()
             trackAdapter.notifyDataSetChanged()
-            val inputMM = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager  //константа для скрытия клавиатуры
-            inputMM.hideSoftInputFromWindow(inputEditText.windowToken,0)
+            val inputMM =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager  //константа для скрытия клавиатуры
+            inputMM.hideSoftInputFromWindow(inputEditText.windowToken, 0)
         }
 // EmptyTextWartcher
 
@@ -97,44 +98,41 @@ class SearchActivity : AppCompatActivity() {
                     call: Call<ItunesTrackResponse>,
                     response: Response<ItunesTrackResponse>
                 ) {
-                    if (response.code() == 200) {
+                    val resp = response.body()?.results
+                    if (response.isSuccessful) {
                         trackList.clear()
                         placeholderButton.visibility = View.GONE
                         placeholderImage.visibility = View.GONE
                         placeholderMessageExtra.visibility = View.GONE
 
-                        if (response.body()?.results?.isNotEmpty() == true) {
-                            trackList.addAll(response.body()?.results!!)
+                        if (resp?.isNotEmpty() == true) {
+                            trackList.addAll(resp)
                             trackAdapter.notifyDataSetChanged()
 
                         }
                         if (trackList.isEmpty()) {
-                            showMessage(getString(R.string.not_found), "")
+                            showMessage(getString(R.string.not_found))
                             placeholderImage.setImageResource(R.drawable.light_mode_error)
                             placeholderImage.visibility = View.VISIBLE
-                            Log.d(TAG, "this case, incorrect request")
                         } else {
-                            showMessage("", "")
-                            Log.d(TAG, "this case, alright")
+                            showMessage("")
                         }
                     } else {
-                        showMessage(getString(R.string.no_internet_connection), "")
+                        showMessage(getString(R.string.no_internet_connection))
                         placeholderImage.setImageResource(R.drawable.light_mode_no_connection)
                         placeholderImage.visibility = View.VISIBLE
-                        Log.d(TAG, "this case, string number 112")
 
                     }
                 }
 
                 override fun onFailure(call: Call<ItunesTrackResponse>, t: Throwable) {
-                    showMessage(getString(R.string.no_internet_connection), t.message.toString())
+                    showMessage(getString(R.string.no_internet_connection))
                     placeholderImage.setImageResource(R.drawable.light_mode_no_connection)
                     placeholderImage.visibility = View.VISIBLE
                     placeholderMessageExtra.visibility = View.VISIBLE
                     placeholderMessageExtra.setText(R.string.no_internet_connection_extra)
                     placeholderButton.visibility = View.VISIBLE
                     placeholderButton.setOnClickListener { tracksSearch() }
-                    Log.e(TAG,"4xx case")
                 }
 
             })
@@ -169,16 +167,13 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun showMessage(text: String, additionalMessage: String) {
+    private fun showMessage(text: String) {
         if (text.isNotEmpty()) {
             placeholderMessage.visibility = View.VISIBLE
             trackList.clear()
             trackAdapter.notifyDataSetChanged()
             placeholderMessage.text = text
-            if (additionalMessage.isNotEmpty()) {
-                Toast.makeText(applicationContext, additionalMessage, Toast.LENGTH_LONG)
-                    .show()
-            }
+
         } else {
             placeholderMessage.visibility = View.GONE
         }
@@ -187,7 +182,6 @@ class SearchActivity : AppCompatActivity() {
 
     companion object {
         private const val INPUT_TEXT = "INPUT_EDIT"
-        private const val TAG = "11th_SPRINT_LOG"
 
     }
 }

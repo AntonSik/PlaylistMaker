@@ -17,6 +17,7 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val tvTiming = itemView.findViewById<TextView>(R.id.tv_timing)
     private val tvTrack: TextView = itemView.findViewById(R.id.tv_track)
     private val tvAuthor: TextView = itemView.findViewById(R.id.tv_author)
+    private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
 
     fun bind(item: Track) {
         val url = item.artworkUrl100
@@ -28,7 +29,7 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             .into(ivPrint)
         tvTrack.text = item.trackName
         tvAuthor.text = item.artistName
-        tvTiming.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(item.trackTimeMillis)
+        tvTiming.text = dateFormat.format(item.trackTimeMillis)
 
     }
 
