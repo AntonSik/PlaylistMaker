@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="?attr/colorSecondary"
     android:orientation="vertical"
     tools:context=".SearchActivity">
@@ -55,6 +55,8 @@
             android:inputType="text"
             android:maxLines="1"
             android:textIsSelectable="true"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             android:theme="@style/MyTheme" />
 
         <ImageView
@@ -68,7 +70,9 @@
             android:src="@drawable/clear"
             android:visibility="gone" />
     </FrameLayout>
-
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_recycleView"
         android:layout_width="match_parent"
@@ -78,4 +82,56 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:itemCount="7"
         tools:listitem="@layout/item_track" />
+    <LinearLayout
+        android:id="@+id/placeholder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical">
+        <ImageView
+            android:id="@+id/iv_placeholderImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/light_mode_error"
+            android:visibility="gone"/>
+    <TextView android:id="@+id/tv_placeholderMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:textSize="19sp"
+        android:fontFamily="@font/ys_display_medium"
+        android:textColor="?attr/colorOnSecondary"
+        android:lineHeight="22dp"/>
+        <TextView android:id="@+id/tv_placeholderMessageExtra"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textSize="19sp"
+            android:fontFamily="@font/ys_display_medium"
+            android:textColor="?attr/colorOnSecondary"
+            android:lineHeight="22dp"
+            android:visibility="gone"/>
+    <Button
+        style="@style/ButtonStyle"
+        android:theme="@style/Update_btn_theme"
+        android:id="@+id/b_update_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:backgroundTint="?attr/colorOnSecondary"
+        android:textColor="?attr/colorSecondary"
+        app:cornerRadius = "54dp"
+        android:text="@string/update"
+        android:textSize="14sp"
+        android:fontFamily="@font/ys_display_medium"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+    </LinearLayout>
+</FrameLayout>
 </LinearLayout>
