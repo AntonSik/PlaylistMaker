@@ -4,18 +4,26 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
+    private lateinit var image : ImageView
+    private lateinit var shareField: TextView
+    private lateinit var supportField : TextView
+    private lateinit var termsField: TextView
+    private lateinit var themeSwitcher: SwitchMaterial
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        val image = findViewById<ImageView>(R.id.arrow)
-        val shareField = findViewById<TextView>(R.id.share)
-        val supportField = findViewById<TextView>(R.id.support)
-        val termsField = findViewById<TextView>(R.id.terms)
+         image = findViewById(R.id.arrow)
+         shareField = findViewById(R.id.share)
+         supportField = findViewById(R.id.support)
+         termsField = findViewById(R.id.terms)
+        themeSwitcher = findViewById(R.id.themeSwitcher)
 
         image.setOnClickListener {
             finish()
@@ -40,5 +48,16 @@ class SettingsActivity : AppCompatActivity() {
             val offerIntent = Intent(Intent.ACTION_VIEW, url)
             startActivity(offerIntent)
         }
+
+        themeSwitcher.setOnCheckedChangeListener {switcher, checked ->
+
+                val isChecked = themeSwitcher.isChecked
+
+                (applicationContext as App).switchTheme(checked)
+            }
+
+
+
+
     }
 }
