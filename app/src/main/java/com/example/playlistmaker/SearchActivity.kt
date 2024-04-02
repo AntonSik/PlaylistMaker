@@ -6,6 +6,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -38,6 +39,7 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
         private const val INPUT_TEXT = "INPUT_EDIT"
         private const val SHARED_PREFERENCES_HISTORY = "Shared pref's key"
         private const val KEY_FOR_NEW_TRACK = "New track's key"
+        private const val TAG_12 = "TAG FOR 12TH SPRINT"
     }
 
     private val itunesBaseUrl = "https://itunes.apple.com"
@@ -60,26 +62,23 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
     private lateinit var listener: OnSharedPreferenceChangeListener
     lateinit var sharedPrefs : SharedPreferences
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        sharedPrefs = getSharedPreferences(SHARED_PREFERENCES_HISTORY, MODE_PRIVATE)
-        inputEditText = findViewById(R.id.inputEditText)
         val imageArrow = findViewById<ImageView>(R.id.arrow2)
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
         val recyclerView = findViewById<RecyclerView>(R.id.rv_recycleView)
+        sharedPrefs = getSharedPreferences(SHARED_PREFERENCES_HISTORY, MODE_PRIVATE)
+        inputEditText = findViewById(R.id.inputEditText)
         historyTracks = arrayListOf()
-        val historyAdapter = TrackAdapter(historyTracks, this)
         placeholderMessage = findViewById(R.id.tv_placeholderMessage)
         placeholderMessageExtra = findViewById(R.id.tv_placeholderMessageExtra)
         placeholderImage = findViewById(R.id.iv_placeholderImage)
         placeholderButton = findViewById(R.id.b_update_btn)
 
-
         savedText = savedInstanceState?.getString(INPUT_TEXT)
-
-
 
         imageArrow.setOnClickListener {
             finish()
@@ -94,6 +93,19 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
             inputMM.hideSoftInputFromWindow(inputEditText.windowToken, 0)
         }
 
+        listener =
+            OnSharedPreferenceChangeListener { sharedPreferences, key ->   //достаем json-строку из sharedPreferences, конвертируем обратно в объект и добавляем ее к списку треков в адаптре.
+                if (key == KEY_FOR_NEW_TRACK) {
+                    val track = sharedPrefs?.getString(KEY_FOR_NEW_TRACK, null)
+                    if (track != null) {
+                        trackAdapter.tracks.add(0, jsonToObj(track))
+                        trackAdapter.notifyItemInserted(0)                 // Обновляем
+                        Log.d(TAG_12,"все добавилось" )
+                    }
+                }
+            }
+        sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
+
 // TextWatcher
 
         val textWatcher = object : TextWatcher {
@@ -102,38 +114,32 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 savedText = s.toString()
                 clearButton.visibility = clearButtonVisibility(s)
-
             }
-
             override fun afterTextChanged(s: Editable?) {}
-
         }
-        listener =
-            OnSharedPreferenceChangeListener { sharedPreferences, key ->   //достаем json-строку из sharedPreferences, конвертируем обратно в объект и добавляем ее к списку треков в адаптре.
-                if (key == KEY_FOR_NEW_TRACK) {
-                    val track = sharedPrefs?.getString(KEY_FOR_NEW_TRACK, null)
-                    if (track != null) {
-                        historyAdapter.tracks.add(0, jsonToObj(track))
-                        historyAdapter.notifyItemInserted(0)                 // Обновляем
-                    }
-                }
-            }
-        sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
+
+//        sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
 
         inputEditText.addTextChangedListener(textWatcher)
 
         trackList = arrayListOf()
         trackAdapter = TrackAdapter(trackList, this)
-//       recyclerView.adapter = trackAdapter
-//        inputEditText.setOnFocusChangeListener { view, hasFocus ->
-//            if (hasFocus && inputEditText.text.isEmpty() && historyTracks.isNotEmpty()){
-//                trackAdapter  = TrackAdapter(historyTracks,this)
-//            } else {
-//            trackAdapter = TrackAdapter(trackList,this)                           //Ошибка где-то здесь
-//            }
-//        }
+        inputEditText.setOnFocusChangeListener { view, hasFocus ->
+            if (hasFocus && inputEditText.text.isEmpty()){
+                if(historyTracks.isNotEmpty()) {
+                    trackAdapter.tracks = historyTracks
+                    Toast.makeText(this, "вот список истории : ${historyTracks}", Toast.LENGTH_LONG)
+                        .show()
+                }else{
+                    trackAdapter.tracks = trackList
+                    Toast.makeText(this, "значит список истории пуст ${historyTracks}",Toast.LENGTH_SHORT).show()
+                }
+            }else{
+                Toast.makeText(this, "косяк с условием",Toast.LENGTH_LONG).show()
+            }
+        }
         recyclerView.adapter = trackAdapter
-        sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
+
 
         fun tracksSearch() {
             itunesService.search(inputEditText.text.toString()).enqueue(object :
@@ -237,6 +243,7 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
         sharedPrefs.edit()
             .putString(KEY_FOR_NEW_TRACK, objToJson(track))
             .apply()
+
     }
 
 }
