@@ -37,8 +37,6 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
 
     companion object {
         private const val INPUT_TEXT = "INPUT_EDIT"
-        private const val SHARED_PREFERENCES_HISTORY = "Shared pref's key"
-        private const val KEY_FOR_NEW_TRACK = "New track's key"
         private const val TAG_12 = "TAG FOR 12TH SPRINT"
     }
 
@@ -55,12 +53,11 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
     lateinit var trackList: ArrayList<Track>
     lateinit var historyTracks: ArrayList<Track>
     lateinit var trackAdapter: TrackAdapter
+    lateinit var historyAdapter: TrackAdapter
     private lateinit var placeholderMessage: TextView
     private lateinit var placeholderMessageExtra: TextView
     private lateinit var placeholderImage: ImageView
     private lateinit var placeholderButton: Button
-    private lateinit var listener: OnSharedPreferenceChangeListener
-    lateinit var sharedPrefs : SharedPreferences
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,13 +67,14 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
         val imageArrow = findViewById<ImageView>(R.id.arrow2)
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
         val recyclerView = findViewById<RecyclerView>(R.id.rv_recycleView)
-        sharedPrefs = getSharedPreferences(SHARED_PREFERENCES_HISTORY, MODE_PRIVATE)
         inputEditText = findViewById(R.id.inputEditText)
         historyTracks = arrayListOf()
+        historyAdapter = TrackAdapter(historyTracks,this)
         placeholderMessage = findViewById(R.id.tv_placeholderMessage)
         placeholderMessageExtra = findViewById(R.id.tv_placeholderMessageExtra)
         placeholderImage = findViewById(R.id.iv_placeholderImage)
         placeholderButton = findViewById(R.id.b_update_btn)
+
 
         savedText = savedInstanceState?.getString(INPUT_TEXT)
 
@@ -92,19 +90,6 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
                 getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager  //константа для скрытия клавиатуры
             inputMM.hideSoftInputFromWindow(inputEditText.windowToken, 0)
         }
-
-        listener =
-            OnSharedPreferenceChangeListener { sharedPreferences, key ->   //достаем json-строку из sharedPreferences, конвертируем обратно в объект и добавляем ее к списку треков в адаптре.
-                if (key == KEY_FOR_NEW_TRACK) {
-                    val track = sharedPrefs?.getString(KEY_FOR_NEW_TRACK, null)
-                    if (track != null) {
-                        trackAdapter.tracks.add(0, jsonToObj(track))
-                        trackAdapter.notifyItemInserted(0)                 // Обновляем
-                        Log.d(TAG_12,"все добавилось" )
-                    }
-                }
-            }
-        sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
 
 // TextWatcher
 
@@ -127,11 +112,11 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
         inputEditText.setOnFocusChangeListener { view, hasFocus ->
             if (hasFocus && inputEditText.text.isEmpty()){
                 if(historyTracks.isNotEmpty()) {
-                    trackAdapter.tracks = historyTracks
+                    recyclerView.adapter = historyAdapter
                     Toast.makeText(this, "вот список истории : ${historyTracks}", Toast.LENGTH_LONG)
                         .show()
                 }else{
-                    trackAdapter.tracks = trackList
+                    recyclerView.adapter = trackAdapter
                     Toast.makeText(this, "значит список истории пуст ${historyTracks}",Toast.LENGTH_SHORT).show()
                 }
             }else{
@@ -229,20 +214,9 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
         }
     }
 
-    fun objToJson(track: Track): String {
-        return Gson().toJson(track)
-    }
-
-    fun jsonToObj(json: String): Track {
-        return Gson().fromJson(json, Track::class.java)
-    }
-
     override fun onItemClick(track: Track) {
         Toast.makeText(this, "Нажали на ${track.trackName}", Toast.LENGTH_LONG)
             .show()  // добавили элемент в sharedPreferences по клику на него
-        sharedPrefs.edit()
-            .putString(KEY_FOR_NEW_TRACK, objToJson(track))
-            .apply()
 
     }
 
