@@ -6,40 +6,49 @@ import com.google.gson.reflect.TypeToken
 
 class HistoryPrefs(context: Context) {
     companion object {
-        private const val SHARED_PREFERENCES_HISTORY = "Shared pref's key"
+        const val SHARED_PREFERENCES_HISTORY = "Shared pref's key"
         private const val KEY_FOR_TRACK_LIST = "New List's key"
     }
 
-    val sharedPrefs = context.getSharedPreferences(SHARED_PREFERENCES_HISTORY, Context.MODE_PRIVATE)
+    private val sharedPrefs =
+        context.getSharedPreferences(SHARED_PREFERENCES_HISTORY, Context.MODE_PRIVATE)
 
-    fun save(historyTrackList: ArrayList<Track>) {
+    private fun saveList(historyTrackList: ArrayList<Track>) {    // Метод сохранения листа в sharedPreferences
 
-    val trackListJson = Gson().toJson(historyTrackList)
+        val trackListJson = Gson().toJson(historyTrackList)
 
-    sharedPrefs.edit()
-        .putString(KEY_FOR_TRACK_LIST, trackListJson)
-        .apply()
-}
-    fun get(): ArrayList<Track>{     // Метод получения
+        sharedPrefs.edit()
+            .putString(KEY_FOR_TRACK_LIST, trackListJson)
+            .apply()
+    }
 
-        val typeList =  object : TypeToken<ArrayList<Track>>() {}.type
+    fun getList(): ArrayList<Track> {     // Метод получения листа из sharedPreferences
+
+        val typeList = object : TypeToken<ArrayList<Track>>() {}.type
         val savedTrackListJson = sharedPrefs.getString(KEY_FOR_TRACK_LIST, null)
-        if(savedTrackListJson != null) {
-            val savedTrackList: ArrayList<Track> = Gson().fromJson(savedTrackListJson, typeList)
-            return savedTrackList
+        if (savedTrackListJson != null) {
+            return Gson().fromJson(savedTrackListJson, typeList)
+
         }
         return arrayListOf()
     }
-    fun add(track: Track){
-        val historyList = get()
 
-        if(historyList.size > 10){
+    fun addTrack(track: Track) {     //добавление трека в лист
+        val historyList = getList()
+
+        if (historyList.size > 9) {
             historyList.removeAt(historyList.size - 1)
         }
-        if(historyList.contains(track)) historyList.remove(track)
+        if (historyList.contains(track)) historyList.remove(track)
 
-        historyList.add(0,track)
-        save(historyList)
+        historyList.add(0, track)
+        saveList(historyList)
+    }
+
+    fun clearHistory() {
+        val historyList = getList()
+        historyList.clear()
+        saveList(historyList)
     }
 
 }

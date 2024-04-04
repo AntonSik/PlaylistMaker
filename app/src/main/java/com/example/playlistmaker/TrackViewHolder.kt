@@ -19,25 +19,25 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val tvAuthor: TextView = itemView.findViewById(R.id.tv_author)
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
 
-    fun bind(item: Track,listenerItem: OnClickListenerItem) {
+    fun bind(item: Track, listenerItem: OnClickListenerItem) {
         val url = item.artworkUrl100
         Glide.with(itemView)
             .load(url)
             .placeholder(R.drawable.placeholder)
             .fitCenter()
-            .transform(RoundedCorners(dpToPx(2f, itemView.context )))
+            .transform(RoundedCorners(dpToPx(2f, itemView.context)))
             .into(ivPrint)
         tvTrack.text = item.trackName
         tvAuthor.text = item.artistName
         tvTiming.text = dateFormat.format(item.trackTimeMillis)
 
-        itemView.setOnClickListener{
+        itemView.setOnClickListener {
             listenerItem.onItemClick(item)
         }
 
     }
 
-fun dpToPx(dp: Float, context: Context): Int {
+    fun dpToPx(dp: Float, context: Context): Int {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             dp,

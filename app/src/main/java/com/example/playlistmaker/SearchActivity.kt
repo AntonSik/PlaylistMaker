@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -34,7 +33,6 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
 
     companion object {
         private const val INPUT_TEXT = "INPUT_EDIT"
-        private const val TAG_12 = "TAG FOR 12TH SPRINT"
     }
 
     private val itunesBaseUrl = "https://itunes.apple.com"
@@ -48,32 +46,33 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
     private var savedText: String? = null
     private lateinit var inputEditText: EditText
     lateinit var trackList: ArrayList<Track>
-    lateinit var historyTracks: ArrayList<Track>
+    private lateinit var historyTracks: ArrayList<Track>
     lateinit var trackAdapter: TrackAdapter
-    lateinit var historyAdapter: TrackAdapter
+    private lateinit var historyAdapter: TrackAdapter
     private lateinit var placeholderMessage: TextView
     private lateinit var placeholderMessageExtra: TextView
     private lateinit var placeholderImage: ImageView
     private lateinit var placeholderButton: Button
-    lateinit var historyPrefs : HistoryPrefs
+    private lateinit var clearHistoryButton: Button
+    private lateinit var historyPrefs: HistoryPrefs
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
         historyPrefs = HistoryPrefs(this)
+        val searchedText = findViewById<TextView>(R.id.tv_searched)
         val imageArrow = findViewById<ImageView>(R.id.arrow2)
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
         val recyclerView = findViewById<RecyclerView>(R.id.rv_recycleView)
         inputEditText = findViewById(R.id.inputEditText)
-        historyTracks = historyPrefs.get()
-        historyAdapter = TrackAdapter(historyTracks,this)
+        historyTracks = historyPrefs.getList()
+        historyAdapter = TrackAdapter(historyTracks, this)
         placeholderMessage = findViewById(R.id.tv_placeholderMessage)
         placeholderMessageExtra = findViewById(R.id.tv_placeholderMessageExtra)
         placeholderImage = findViewById(R.id.iv_placeholderImage)
         placeholderButton = findViewById(R.id.b_update_btn)
-
-
+        clearHistoryButton = findViewById(R.id.b_clear_history_btn)
 
         savedText = savedInstanceState?.getString(INPUT_TEXT)
 
@@ -84,10 +83,20 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
         clearButton.setOnClickListener {
             inputEditText.setText("")
             trackList.clear()
+            recyclerView.adapter = historyAdapter
             trackAdapter.notifyDataSetChanged()
+            clearHistoryButton.visibility = View.VISIBLE
+            searchedText.visibility = View.VISIBLE
             val inputMM =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager  //константа для скрытия клавиатуры
             inputMM.hideSoftInputFromWindow(inputEditText.windowToken, 0)
+        }
+        clearHistoryButton.setOnClickListener {
+            historyPrefs.clearHistory()
+            historyTracks.clear()
+            historyAdapter.notifyDataSetChanged()
+            clearHistoryButton.visibility = View.GONE
+            searchedText.visibility = View.GONE
         }
 
 // TextWatcher
@@ -98,7 +107,13 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 savedText = s.toString()
                 clearButton.visibility = clearButtonVisibility(s)
+                if (inputEditText.hasFocus() && inputEditText.text.isNotEmpty()) {
+                    recyclerView.adapter = trackAdapter
+                    clearHistoryButton.visibility = View.GONE
+                    searchedText.visibility = View.GONE
+                }
             }
+
             override fun afterTextChanged(s: Editable?) {}
         }
 
@@ -107,20 +122,19 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
         trackList = arrayListOf()
         trackAdapter = TrackAdapter(trackList, this)
         inputEditText.setOnFocusChangeListener { view, hasFocus ->
-            if (hasFocus && inputEditText.text.isEmpty()){
-                if(historyTracks.isNotEmpty()) {
-                    recyclerView.adapter = historyAdapter
-                    Toast.makeText(this, "вот список истории : ${historyTracks}", Toast.LENGTH_LONG)
-                        .show()
-                }else{
-                    recyclerView.adapter = trackAdapter
-                    Toast.makeText(this, "значит список истории пуст ${historyTracks}",Toast.LENGTH_SHORT).show()
-                }
-            }else{
-                Toast.makeText(this, "косяк с условием",Toast.LENGTH_LONG).show()
+            if (hasFocus && inputEditText.text.isEmpty() && historyTracks.isNotEmpty()) {
+                recyclerView.adapter = historyAdapter
+                clearHistoryButton.visibility =
+                    View.VISIBLE                                   // Кейс когда история поиска не пуста
+                searchedText.visibility = View.VISIBLE
+
+            } else {
+                recyclerView.adapter = trackAdapter
+                clearHistoryButton.visibility = View.GONE         // Кейс когда история пуста
+                searchedText.visibility = View.GONE
+                trackAdapter.notifyDataSetChanged()
             }
         }
-        recyclerView.adapter = trackAdapter
 
 
         fun tracksSearch() {
@@ -171,6 +185,9 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
         }
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
+                recyclerView.adapter = trackAdapter
+                clearHistoryButton.visibility = View.GONE
+                searchedText.visibility = View.GONE
                 tracksSearch()
                 true
             }
@@ -212,9 +229,9 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
     }
 
     override fun onItemClick(track: Track) {
-        Toast.makeText(this, "Нажали на ${track.trackName}", Toast.LENGTH_LONG)
-            .show()  // добавили элемент в sharedPreferences по клику на него
-            historyPrefs.add(track)
+        Toast.makeText(this, "Clicked", Toast.LENGTH_SHORT)
+            .show()//Добавление треков в историю поиска по клику
+        historyPrefs.addTrack(track)
     }
 
 }

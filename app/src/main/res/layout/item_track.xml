@@ -49,6 +49,7 @@
                 android:theme="@style/ThemeOfTrackDescription"
                 app:drawableEndCompat="@drawable/dot_icon"
                 tools:text="Исполнитель ffffffffffffffffffffffffffffffffffffffffffffffffffffgggffffff" />
+
             <TextView
                 android:id="@+id/tv_timing"
                 android:layout_width="wrap_content"
