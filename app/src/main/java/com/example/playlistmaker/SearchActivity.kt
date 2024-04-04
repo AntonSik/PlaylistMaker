@@ -1,8 +1,6 @@
 package com.example.playlistmaker
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -17,7 +15,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -58,22 +55,24 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
     private lateinit var placeholderMessageExtra: TextView
     private lateinit var placeholderImage: ImageView
     private lateinit var placeholderButton: Button
+    lateinit var historyPrefs : HistoryPrefs
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-
+        historyPrefs = HistoryPrefs(this)
         val imageArrow = findViewById<ImageView>(R.id.arrow2)
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
         val recyclerView = findViewById<RecyclerView>(R.id.rv_recycleView)
         inputEditText = findViewById(R.id.inputEditText)
-        historyTracks = arrayListOf()
+        historyTracks = historyPrefs.get()
         historyAdapter = TrackAdapter(historyTracks,this)
         placeholderMessage = findViewById(R.id.tv_placeholderMessage)
         placeholderMessageExtra = findViewById(R.id.tv_placeholderMessageExtra)
         placeholderImage = findViewById(R.id.iv_placeholderImage)
         placeholderButton = findViewById(R.id.b_update_btn)
+
 
 
         savedText = savedInstanceState?.getString(INPUT_TEXT)
@@ -102,8 +101,6 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
             }
             override fun afterTextChanged(s: Editable?) {}
         }
-
-//        sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
 
         inputEditText.addTextChangedListener(textWatcher)
 
@@ -217,7 +214,7 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
     override fun onItemClick(track: Track) {
         Toast.makeText(this, "Нажали на ${track.trackName}", Toast.LENGTH_LONG)
             .show()  // добавили элемент в sharedPreferences по клику на него
-
+            historyPrefs.add(track)
     }
 
 }
