@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -54,6 +55,7 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
     private lateinit var placeholderImage: ImageView
     private lateinit var placeholderButton: Button
     private lateinit var clearHistoryButton: Button
+    private lateinit var placeholder: LinearLayout
     private lateinit var historyPrefs: HistoryPrefs
 
 
@@ -65,16 +67,9 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
         val imageArrow = findViewById<ImageView>(R.id.arrow2)
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
         val recyclerView = findViewById<RecyclerView>(R.id.rv_recycleView)
-        inputEditText = findViewById(R.id.inputEditText)
-        historyTracks = historyPrefs.getHistoryList()
-        historyAdapter = TrackAdapter(historyTracks, this)
-        placeholderMessage = findViewById(R.id.tv_placeholderMessage)
-        placeholderMessageExtra = findViewById(R.id.tv_placeholderMessageExtra)
-        placeholderImage = findViewById(R.id.iv_placeholderImage)
-        placeholderButton = findViewById(R.id.b_update_btn)
-        clearHistoryButton = findViewById(R.id.b_clear_history_btn)
 
         savedText = savedInstanceState?.getString(INPUT_TEXT)
+        init()
 
         imageArrow.setOnClickListener {
             finish()
@@ -148,6 +143,7 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
                     val resp = response.body()?.results
                     if (response.isSuccessful) {
                         trackList.clear()
+                        placeholder.visibility = View.GONE
                         placeholderButton.visibility = View.GONE
                         placeholderImage.visibility = View.GONE
                         placeholderMessageExtra.visibility = View.GONE
@@ -159,6 +155,7 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
                         }
                         if (trackList.isEmpty()) {
                             showMessage(getString(R.string.not_found))
+                            placeholder.visibility = View.VISIBLE
                             placeholderImage.setImageResource(R.drawable.light_mode_error)
                             placeholderImage.visibility = View.VISIBLE
                         } else {
@@ -166,6 +163,7 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
                         }
                     } else {
                         showMessage(getString(R.string.no_internet_connection))
+                        placeholder.visibility = View.VISIBLE
                         placeholderImage.setImageResource(R.drawable.light_mode_no_connection)
                         placeholderImage.visibility = View.VISIBLE
 
@@ -175,6 +173,7 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
                 override fun onFailure(call: Call<ItunesTrackResponse>, t: Throwable) {
                     showMessage(getString(R.string.no_internet_connection))
                     placeholderImage.setImageResource(R.drawable.light_mode_no_connection)
+                    placeholder.visibility = View.VISIBLE
                     placeholderImage.visibility = View.VISIBLE
                     placeholderMessageExtra.visibility = View.VISIBLE
                     placeholderMessageExtra.setText(R.string.no_internet_connection_extra)
@@ -233,6 +232,19 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
         Toast.makeText(this, "Clicked", Toast.LENGTH_SHORT)
             .show()//Добавление треков в историю поиска по клику
         historyPrefs.addTrack(track)
+    }
+
+    private fun init() {
+        inputEditText = findViewById(R.id.inputEditText)
+        historyTracks = historyPrefs.getHistoryList()
+        historyAdapter = TrackAdapter(historyTracks, this)
+        placeholder = findViewById(R.id.placeholder)
+        placeholderMessage = findViewById(R.id.tv_placeholderMessage)
+        placeholderMessageExtra = findViewById(R.id.tv_placeholderMessageExtra)
+        placeholderImage = findViewById(R.id.iv_placeholderImage)
+        placeholderButton = findViewById(R.id.b_update_btn)
+        clearHistoryButton = findViewById(R.id.b_clear_history_btn)
+
     }
 
 }
