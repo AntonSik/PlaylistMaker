@@ -100,6 +100,7 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
                 savedText = s.toString()
                 clearButton.visibility = clearButtonVisibility(s)
                 if (inputEditText.hasFocus() && inputEditText.text.isNotEmpty()) {
+                    trackAdapter.tracks.clear()
                     recyclerView.adapter = trackAdapter
                     clearHistoryButton.visibility = View.GONE
                     searchedText.visibility = View.GONE
@@ -110,7 +111,6 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
                         clearHistoryButton.visibility = View.VISIBLE
                         searchedText.visibility = View.VISIBLE
                     }
-
             }
 
             override fun afterTextChanged(s: Editable?) {}
