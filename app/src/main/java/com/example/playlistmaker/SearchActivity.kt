@@ -78,11 +78,6 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
         clearButton.setOnClickListener {
             inputEditText.setText("")
             trackList.clear()
-            historyAdapter.tracks = historyPrefs.getHistoryList()
-            recyclerView.adapter = historyAdapter
-            trackAdapter.notifyDataSetChanged()
-            clearHistoryButton.visibility = View.VISIBLE
-            searchedText.visibility = View.VISIBLE
             val inputMM =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager  //константа для скрытия клавиатуры
             inputMM.hideSoftInputFromWindow(inputEditText.windowToken, 0)
@@ -90,6 +85,7 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
         clearHistoryButton.setOnClickListener {
             historyPrefs.clearHistory()
             historyTracks.clear()
+            historyAdapter.tracks = historyPrefs.getHistoryList()
             historyAdapter.notifyDataSetChanged()
             clearHistoryButton.visibility = View.GONE
             searchedText.visibility = View.GONE
@@ -107,7 +103,14 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
                     recyclerView.adapter = trackAdapter
                     clearHistoryButton.visibility = View.GONE
                     searchedText.visibility = View.GONE
-                }
+                }else {
+                        historyAdapter.tracks = historyPrefs.getHistoryList()
+                        recyclerView.adapter = historyAdapter
+                        trackAdapter.notifyDataSetChanged()
+                        clearHistoryButton.visibility = View.VISIBLE
+                        searchedText.visibility = View.VISIBLE
+                    }
+
             }
 
             override fun afterTextChanged(s: Editable?) {}
