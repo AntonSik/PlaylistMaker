@@ -66,7 +66,7 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
         val recyclerView = findViewById<RecyclerView>(R.id.rv_recycleView)
         inputEditText = findViewById(R.id.inputEditText)
-        historyTracks = historyPrefs.getList()
+        historyTracks = historyPrefs.getHistoryList()
         historyAdapter = TrackAdapter(historyTracks, this)
         placeholderMessage = findViewById(R.id.tv_placeholderMessage)
         placeholderMessageExtra = findViewById(R.id.tv_placeholderMessageExtra)
@@ -83,6 +83,7 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
         clearButton.setOnClickListener {
             inputEditText.setText("")
             trackList.clear()
+            historyAdapter.tracks = historyPrefs.getHistoryList()
             recyclerView.adapter = historyAdapter
             trackAdapter.notifyDataSetChanged()
             clearHistoryButton.visibility = View.VISIBLE

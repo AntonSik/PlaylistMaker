@@ -22,7 +22,7 @@ class HistoryPrefs(context: Context) {
             .apply()
     }
 
-    fun getList(): ArrayList<Track> {     // Метод получения листа из sharedPreferences
+    fun getHistoryList(): ArrayList<Track> {     // Метод получения листа из sharedPreferences
 
         val typeList = object : TypeToken<ArrayList<Track>>() {}.type
         val savedTrackListJson = sharedPrefs.getString(KEY_FOR_TRACK_LIST, null)
@@ -34,7 +34,7 @@ class HistoryPrefs(context: Context) {
     }
 
     fun addTrack(track: Track) {     //добавление трека в лист
-        val historyList = getList()
+        val historyList = getHistoryList()
 
         if (historyList.size > 9) {
             historyList.removeAt(historyList.size - 1)
@@ -46,7 +46,7 @@ class HistoryPrefs(context: Context) {
     }
 
     fun clearHistory() {
-        val historyList = getList()
+        val historyList = getHistoryList()
         historyList.clear()
         saveList(historyList)
     }
