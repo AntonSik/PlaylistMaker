@@ -15,6 +15,7 @@
         android:layout_gravity="start" />
 
     <LinearLayout
+        android:id="@+id/touchable_area"
         android:layout_width="0dp"
         android:layout_height="46dp"
         android:layout_marginHorizontal="10dp"
@@ -48,6 +49,7 @@
                 android:theme="@style/ThemeOfTrackDescription"
                 app:drawableEndCompat="@drawable/dot_icon"
                 tools:text="Исполнитель ffffffffffffffffffffffffffffffffffffffffffffffffffffgggffffff" />
+
             <TextView
                 android:id="@+id/tv_timing"
                 android:layout_width="wrap_content"
