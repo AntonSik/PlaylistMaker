@@ -21,14 +21,6 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-/**
- * 1) Получить элемент по нажатию на него
- * 2) конвертировать его в json-строку
- * 3) json-строку сохранить в sharedPreferences
- * 4) достаем из sharedPreferences строку
- * 4) десериализуем её обратно в обЪект с помощью библиотеки Gson
- * 5) добавляем в коллекцию "история"
- * 6) отобразить историю согласно макета **/
 
 class SearchActivity : AppCompatActivity(), OnClickListenerItem {
 
@@ -232,8 +224,6 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
     }
 
     override fun onItemClick(track: Track) {
-        Toast.makeText(this, "Clicked", Toast.LENGTH_SHORT)
-            .show()//Добавление треков в историю поиска по клику
         historyPrefs.addTrack(track)
     }
 

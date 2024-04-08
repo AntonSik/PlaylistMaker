@@ -2,21 +2,16 @@ package com.example.playlistmaker
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.res.Configuration
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.HistoryPrefs.Companion.SHARED_PREFERENCES_HISTORY
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
-    companion object {
-        private const val KEY_THEME_SWITCHER = "key for switcher"
 
-    }
 
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var image: ImageView
@@ -24,7 +19,7 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var supportField: TextView
     private lateinit var termsField: TextView
     private lateinit var themeSwitcher: SwitchMaterial
-    private var darkTheme = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -40,16 +35,14 @@ class SettingsActivity : AppCompatActivity() {
             finish()
         }
 
-        themeSwitcher.isChecked = sharedPrefs.getBoolean(
-            KEY_THEME_SWITCHER,
-            resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-        )
-        switchTheme(themeSwitcher.isChecked)
-        themeSwitcher.setOnCheckedChangeListener { switcher, isChecked ->
-            sharedPrefs.edit().putBoolean(KEY_THEME_SWITCHER, isChecked).apply()
-            switchTheme(isChecked)
+        if ((applicationContext as App).darkTheme) {
+            themeSwitcher.setChecked(true)
+        }
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
 
         }
+
         shareField.setOnClickListener {
 
             val shareIntent = Intent(Intent.ACTION_SEND_MULTIPLE)
@@ -73,14 +66,4 @@ class SettingsActivity : AppCompatActivity() {
 
     }
 
-    private fun switchTheme(darkThemeEnabled: Boolean) {
-        darkTheme = darkThemeEnabled
-        AppCompatDelegate.setDefaultNightMode(
-            if (darkThemeEnabled) {
-                AppCompatDelegate.MODE_NIGHT_YES
-            } else {
-                AppCompatDelegate.MODE_NIGHT_NO
-            }
-        )
-    }
 }

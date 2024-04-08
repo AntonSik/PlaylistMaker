@@ -8,6 +8,7 @@ class HistoryPrefs(context: Context) {
     companion object {
         const val SHARED_PREFERENCES_HISTORY = "Shared pref's key"
         private const val KEY_FOR_TRACK_LIST = "New List's key"
+        private const val MAX_HISTORY_SIZE = 10
     }
 
     private val sharedPrefs =
@@ -36,7 +37,7 @@ class HistoryPrefs(context: Context) {
     fun addTrack(track: Track) {     //добавление трека в лист
         val historyList = getHistoryList()
 
-        if (historyList.size > 9) {
+        if (historyList.size > MAX_HISTORY_SIZE) {
             historyList.removeAt(historyList.size - 1)
         }
         if (historyList.contains(track)) historyList.remove(track)
