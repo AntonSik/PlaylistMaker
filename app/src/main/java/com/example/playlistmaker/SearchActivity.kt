@@ -12,7 +12,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Call
@@ -96,13 +95,13 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
                     recyclerView.adapter = trackAdapter
                     clearHistoryButton.visibility = View.GONE
                     searchedText.visibility = View.GONE
-                }else {
-                        historyAdapter.tracks = historyPrefs.getHistoryList()
-                        recyclerView.adapter = historyAdapter
-                        trackAdapter.notifyDataSetChanged()
-                        clearHistoryButton.visibility = View.VISIBLE
-                        searchedText.visibility = View.VISIBLE
-                    }
+                } else {
+                    historyAdapter.tracks = historyPrefs.getHistoryList()
+                    recyclerView.adapter = historyAdapter
+                    trackAdapter.notifyDataSetChanged()
+                    clearHistoryButton.visibility = View.VISIBLE
+                    searchedText.visibility = View.VISIBLE
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {}

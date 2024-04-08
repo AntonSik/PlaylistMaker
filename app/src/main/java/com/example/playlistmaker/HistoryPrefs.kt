@@ -37,7 +37,7 @@ class HistoryPrefs(context: Context) {
     fun addTrack(track: Track) {     //добавление трека в лист
         val historyList = getHistoryList()
 
-        if (historyList.size > MAX_HISTORY_SIZE) {
+        if (historyList.size == MAX_HISTORY_SIZE) {
             historyList.removeAt(historyList.size - 1)
         }
         if (historyList.contains(track)) historyList.remove(track)
