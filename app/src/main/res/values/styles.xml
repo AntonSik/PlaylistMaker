@@ -64,4 +64,17 @@
         <item name="android:paddingVertical">18dp</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
     </style>
+    <style name="audio_player_tv">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">32dp</item>
+        <item name="android:paddingTop">9dp</item>
+        <item name="android:paddingHorizontal">2dp</item>
+        <item name="android:gravity">end</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
 </resources>
