@@ -25,4 +25,13 @@
     <string name="year">Год</string>
     <string name="country">Страна</string>
     <string name="genre">Жанр</string>
+    <string name="progress_playing_placeholder">0:30</string>
+    <string name="content_description_arrow_back">Стрелка возврата</string>
+    <string name="content_description_cover">Обложка трека</string>
+    <string name="content_description_add_media_btn">Кнопка добавления трека в плейлист</string>
+    <string name="content_description_play_btn">кнопка проигрывания/паузы</string>
+    <string name="content_description_like_btn">кнопка добавления в избранное</string>
+    <string name="content_description_clear_btn">кнопка очистки поиска</string>
+    <string name="content_description_bad_request">изображение некорректного запроса поиска</string>
+
 </resources>

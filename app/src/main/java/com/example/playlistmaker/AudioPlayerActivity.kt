@@ -34,16 +34,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         val selectedTrack = intent.getParcelableExtra<Track>("clicked track")
 
         val imageArrow = findViewById<ImageButton>(R.id.ib_arrowBack)
-        coverTrack = findViewById(R.id.iv_cover)
-        nameTrack = findViewById(R.id.tv_trackName)
-        artistsTrack = findViewById(R.id.tv_artists)
-        durationTrack = findViewById(R.id.tv_enterDuration)
-        albumTrack = findViewById(R.id.tv_enterAlbum)
-        album = findViewById(R.id.tv_album)
-        yearTrack = findViewById(R.id.tv_enterYear)
-        year = findViewById(R.id.tv_year)
-        genreTrack = findViewById(R.id.tv_enterGenre)
-        countryTrack = findViewById(R.id.tv_enterCountry)
+        init()
         bind(selectedTrack)
 
         imageArrow.setOnClickListener { finish() }
@@ -62,20 +53,20 @@ class AudioPlayerActivity : AppCompatActivity() {
         nameTrack.text = track?.trackName
         artistsTrack.text = track?.artistName
         durationTrack.text = dateFormat.format(track?.trackTimeMillis)
-        if (track?.collectionName.isNullOrEmpty()){
+        if (track?.collectionName.isNullOrEmpty()) {
             albumTrack.visibility = View.GONE
             album.visibility = View.GONE
-        }else {
+        } else {
             albumTrack.text = track?.collectionName
             albumTrack.visibility = View.VISIBLE
             album.visibility = View.VISIBLE
         }
         genreTrack.text = track?.primaryGenreName
-        if (track?.releaseData.isNullOrEmpty()){
+        if (track?.releaseDate.isNullOrEmpty()) {
             yearTrack.visibility = View.GONE
             year.visibility = View.GONE
-        }else {
-            yearTrack.text = track?.releaseData
+        } else {
+            yearTrack.text = track?.releaseDate?.substring(0, 4)
             yearTrack.visibility = View.VISIBLE
             year.visibility = View.VISIBLE
         }
@@ -88,5 +79,18 @@ class AudioPlayerActivity : AppCompatActivity() {
             dp,
             context.resources.displayMetrics
         ).toInt()
+    }
+
+    private fun init() {
+        coverTrack = findViewById(R.id.iv_cover)
+        nameTrack = findViewById(R.id.tv_trackName)
+        artistsTrack = findViewById(R.id.tv_artists)
+        durationTrack = findViewById(R.id.tv_enterDuration)
+        albumTrack = findViewById(R.id.tv_enterAlbum)
+        album = findViewById(R.id.tv_album)
+        yearTrack = findViewById(R.id.tv_enterYear)
+        year = findViewById(R.id.tv_year)
+        genreTrack = findViewById(R.id.tv_enterGenre)
+        countryTrack = findViewById(R.id.tv_enterCountry)
     }
 }

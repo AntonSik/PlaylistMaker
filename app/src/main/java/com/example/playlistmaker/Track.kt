@@ -6,14 +6,14 @@ import android.os.Parcelable
 
 
 data class Track(
-    val trackId : Int,
+    val trackId: Int,
     val trackName: String,
     val artistName: String,
     val trackTimeMillis: Long,
     val artworkUrl100: String,
     val collectionName: String,
     val primaryGenreName: String,
-    val releaseData:String,
+    val releaseDate: String,
     val country: String,
 ) : Parcelable {
     override fun describeContents(): Int {
@@ -28,21 +28,22 @@ data class Track(
         dest.writeString(artworkUrl100)
         dest.writeString(collectionName)
         dest.writeString(primaryGenreName)
-        dest.writeString(releaseData)
+        dest.writeString(releaseDate)
         dest.writeString(country)
     }
+
     companion object CREATOR : Parcelable.Creator<Track> {
         override fun createFromParcel(source: Parcel): Track {
             return Track(
                 trackId = source.readInt(),
-                trackName = source.readString()?: "",
-                artistName = source.readString()?: "",
+                trackName = source.readString() ?: "",
+                artistName = source.readString() ?: "",
                 trackTimeMillis = source.readLong(),
-                artworkUrl100 = source.readString()?: "",
-                collectionName = source.readString()?: "",
-                primaryGenreName = source.readString()?: "",
-                releaseData = source.readString()?:"",
-                country = source.readString()?: ""
+                artworkUrl100 = source.readString() ?: "",
+                collectionName = source.readString() ?: "",
+                primaryGenreName = source.readString() ?: "",
+                releaseDate = source.readString() ?: "",
+                country = source.readString() ?: ""
             )
         }
 
