@@ -148,8 +148,8 @@
             android:layout_marginTop="30dp"
             app:layout_constraintBaseline_toBaselineOf="@id/tv_duration"
             app:layout_constraintEnd_toStartOf="@id/rightBorder"
-            app:layout_constraintTop_toBottomOf="@id/tv_timePlaying"
             app:layout_constraintStart_toEndOf="@id/barrier2"
+            app:layout_constraintTop_toBottomOf="@id/tv_timePlaying"
             tools:text="5:35" />
 
         <TextView
@@ -184,8 +184,8 @@
             style="@style/audio_player_tv"
             app:layout_constraintBaseline_toBaselineOf="@id/tv_year"
             app:layout_constraintEnd_toStartOf="@id/rightBorder"
-            app:layout_constraintTop_toBottomOf="@id/tv_enterAlbum"
             app:layout_constraintStart_toEndOf="@id/barrier2"
+            app:layout_constraintTop_toBottomOf="@id/tv_enterAlbum"
             tools:text="1993" />
 
         <TextView
@@ -202,8 +202,8 @@
             style="@style/audio_player_tv"
             app:layout_constraintBaseline_toBaselineOf="@id/tv_genre"
             app:layout_constraintEnd_toStartOf="@id/rightBorder"
-            app:layout_constraintTop_toBottomOf="@id/tv_enterYear"
             app:layout_constraintStart_toEndOf="@id/barrier2"
+            app:layout_constraintTop_toBottomOf="@id/tv_enterYear"
             tools:text="Рок" />
 
         <TextView
@@ -220,8 +220,8 @@
             style="@style/audio_player_tv"
             app:layout_constraintBaseline_toBaselineOf="@id/tv_country"
             app:layout_constraintEnd_toStartOf="@id/rightBorder"
-            app:layout_constraintTop_toBottomOf="@id/tv_enterGenre"
             app:layout_constraintStart_toEndOf="@id/barrier2"
+            app:layout_constraintTop_toBottomOf="@id/tv_enterGenre"
             tools:text="РФ" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

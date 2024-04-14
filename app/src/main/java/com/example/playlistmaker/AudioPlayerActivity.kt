@@ -3,6 +3,7 @@ package com.example.playlistmaker
 import android.content.Context
 import android.os.Bundle
 import android.util.TypedValue
+import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -19,7 +20,9 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var artistsTrack: TextView
     private lateinit var durationTrack: TextView
     private lateinit var albumTrack: TextView
+    private lateinit var album: TextView
     private lateinit var yearTrack: TextView
+    private lateinit var year: TextView
     private lateinit var genreTrack: TextView
     private lateinit var countryTrack: TextView
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
@@ -36,7 +39,9 @@ class AudioPlayerActivity : AppCompatActivity() {
         artistsTrack = findViewById(R.id.tv_artists)
         durationTrack = findViewById(R.id.tv_enterDuration)
         albumTrack = findViewById(R.id.tv_enterAlbum)
+        album = findViewById(R.id.tv_album)
         yearTrack = findViewById(R.id.tv_enterYear)
+        year = findViewById(R.id.tv_year)
         genreTrack = findViewById(R.id.tv_enterGenre)
         countryTrack = findViewById(R.id.tv_enterCountry)
         bind(selectedTrack)
@@ -46,8 +51,8 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     }
 
-    fun bind(track: Track?) {
-        val url = track?.artworkUrl100?.replaceAfterLast('/',"512x512bb.jpg")
+    private fun bind(track: Track?) {
+        val url = track?.artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg")
         Glide.with(this)
             .load(url)
             .placeholder(R.drawable.placeholder)
@@ -57,13 +62,27 @@ class AudioPlayerActivity : AppCompatActivity() {
         nameTrack.text = track?.trackName
         artistsTrack.text = track?.artistName
         durationTrack.text = dateFormat.format(track?.trackTimeMillis)
-        albumTrack.text = track?.collectionName
+        if (track?.collectionName.isNullOrEmpty()){
+            albumTrack.visibility = View.GONE
+            album.visibility = View.GONE
+        }else {
+            albumTrack.text = track?.collectionName
+            albumTrack.visibility = View.VISIBLE
+            album.visibility = View.VISIBLE
+        }
         genreTrack.text = track?.primaryGenreName
-        yearTrack.text = track?.releaseData
-        countryTrack.text =track?.country
+        if (track?.releaseData.isNullOrEmpty()){
+            yearTrack.visibility = View.GONE
+            year.visibility = View.GONE
+        }else {
+            yearTrack.text = track?.releaseData
+            yearTrack.visibility = View.VISIBLE
+            year.visibility = View.VISIBLE
+        }
+        countryTrack.text = track?.country
     }
 
-    fun dpToPx(dp: Float, context: Context): Int {
+    private fun dpToPx(dp: Float, context: Context): Int {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             dp,
