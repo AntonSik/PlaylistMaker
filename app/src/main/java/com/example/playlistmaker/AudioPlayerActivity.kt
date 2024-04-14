@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.SearchActivity.Companion.CLICKED_ITEM
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -31,7 +32,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audio_player)
 
-        val selectedTrack = intent.getParcelableExtra<Track>("clicked track")
+        val selectedTrack = intent.getParcelableExtra<Track>(CLICKED_ITEM)
 
         val imageArrow = findViewById<ImageButton>(R.id.ib_arrowBack)
         init()
@@ -48,7 +49,7 @@ class AudioPlayerActivity : AppCompatActivity() {
             .load(url)
             .placeholder(R.drawable.placeholder)
             .fitCenter()
-            .transform(RoundedCorners(dpToPx(2f, this)))
+            .transform(RoundedCorners(dpToPx(8f, this)))
             .into(coverTrack)
         nameTrack.text = track?.trackName
         artistsTrack.text = track?.artistName
@@ -66,7 +67,7 @@ class AudioPlayerActivity : AppCompatActivity() {
             yearTrack.visibility = View.GONE
             year.visibility = View.GONE
         } else {
-            yearTrack.text = track?.releaseDate?.substring(0, 4)
+            if (track?.releaseDate?.length!! > 4) yearTrack.text = track.releaseDate.substring(0, 4)
             yearTrack.visibility = View.VISIBLE
             year.visibility = View.VISIBLE
         }
