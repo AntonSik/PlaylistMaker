@@ -6,4 +6,5 @@
     <dimen name="track_description_and_timing_size">11sp</dimen>
     <dimen name="track_name_size">16sp</dimen>
     <dimen name="button_search_activity_corners">54dp</dimen>
+    <dimen name="player_tv_text">13sp</dimen>
 </resources>

@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -25,6 +26,7 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
 
     companion object {
         private const val INPUT_TEXT = "INPUT_EDIT"
+        const val CLICKED_ITEM = "clicked track"
     }
 
     private val itunesBaseUrl = "https://itunes.apple.com"
@@ -224,6 +226,9 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
 
     override fun onItemClick(track: Track) {
         historyPrefs.addTrack(track)
+        val playerIntent = Intent(this, AudioPlayerActivity::class.java)
+        playerIntent.putExtra(CLICKED_ITEM, track)
+        startActivity(playerIntent)
     }
 
     private fun init() {
