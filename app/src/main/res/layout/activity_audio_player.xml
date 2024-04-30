@@ -104,6 +104,7 @@
             android:background="?attr/colorSecondary"
             android:contentDescription="@string/content_description_play_btn"
             android:src="@drawable/play_vector"
+            android:enabled = "false"
             app:layout_constraintEnd_toStartOf="@+id/btn_like"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/btn_addMedia"
