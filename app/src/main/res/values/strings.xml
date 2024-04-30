@@ -33,5 +33,6 @@
     <string name="content_description_like_btn">кнопка добавления в избранное</string>
     <string name="content_description_clear_btn">кнопка очистки поиска</string>
     <string name="content_description_bad_request">изображение некорректного запроса поиска</string>
+    <string name="zero">00:00</string>
 
 </resources>
