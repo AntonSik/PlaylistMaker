@@ -24,7 +24,6 @@ class AudioPlayerActivity : AppCompatActivity() {
         private const val STATE_PLAYING = 2
         private const val STATE_PAUSED = 3
         private const val UPDATING_DELAY = 400L
-        private const val TRACK_DURATION = 30000L
     }
 
     private lateinit var coverTrack: ImageView
@@ -168,24 +167,18 @@ class AudioPlayerActivity : AppCompatActivity() {
 
                 startPlayer()
                 val startPlaying = System.currentTimeMillis()   //время начала отсчета
-                handler.post(
-                   createPlayingTimer(
-                        startPlaying,
-                        TRACK_DURATION
-                    )
-                )
+                handler.post(createPlayingTimer(startPlaying))
             }
         }
     }
 
-    private fun createPlayingTimer(startTime: Long, duration: Long): Runnable {
+    private fun createPlayingTimer(startTime: Long): Runnable {
         return object : Runnable {
             override fun run() {
 
-                val elapsedTime = System.currentTimeMillis() - startTime
-                val elseTime = duration - elapsedTime
+                val countedTime = startTime + mediaPlayer.currentPosition
 
-                if (elseTime > 0) {
+                if (countedTime > 0) {
                     if (playerState == STATE_PLAYING) {
                         timePlaying.text = dateFormat.format(mediaPlayer.currentPosition)
                         handler.postDelayed(this, UPDATING_DELAY)

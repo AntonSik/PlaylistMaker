@@ -143,6 +143,11 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(searchRunnable)
+    }
+
     private fun hideKeyboard() {
         val inputMM =
             getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager  //константа для скрытия клавиатуры
@@ -171,7 +176,6 @@ class SearchActivity : AppCompatActivity(), OnClickListenerItem {
                     placeholderMessage.visibility = View.GONE
                     placeholderMessageExtra.visibility = View.GONE
                     recyclerView.visibility = View.VISIBLE
-                    searchedText.visibility = View.VISIBLE
                     progressBar.visibility = View.GONE
 
                     if (resp?.isNotEmpty() == true) {
