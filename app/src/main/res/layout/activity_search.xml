@@ -45,7 +45,6 @@
             android:drawableStart="@drawable/light_mode"
             android:drawablePadding="10dp"
             android:hint="@string/input_hint"
-            android:imeOptions="actionDone"
             android:inputType="text"
             android:maxLines="1"
             android:singleLine="true"
@@ -73,6 +72,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="@dimen/progress_bar_size"
+                android:layout_height="@dimen/progress_bar_size"
+                android:layout_marginTop="@dimen/progress_bar_marginTop"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/YP_blue"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tv_searched"

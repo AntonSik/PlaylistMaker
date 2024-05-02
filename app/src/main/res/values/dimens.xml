@@ -7,4 +7,6 @@
     <dimen name="track_name_size">16sp</dimen>
     <dimen name="button_search_activity_corners">54dp</dimen>
     <dimen name="player_tv_text">13sp</dimen>
+    <dimen name="progress_bar_size">44dp</dimen>
+    <dimen name="progress_bar_marginTop">140dp</dimen>
 </resources>
