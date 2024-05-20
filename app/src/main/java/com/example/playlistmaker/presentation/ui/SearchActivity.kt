@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui
 
 import android.content.Context
 import android.content.Intent
@@ -17,6 +17,13 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.HistoryPrefs
+import com.example.playlistmaker.ItunesApi
+import com.example.playlistmaker.ItunesTrackResponse
+import com.example.playlistmaker.OnClickListenerItem
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.TrackAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
