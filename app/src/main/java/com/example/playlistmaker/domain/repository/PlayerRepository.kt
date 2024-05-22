@@ -1,17 +1,16 @@
 package com.example.playlistmaker.domain.repository
 
-import android.widget.ImageButton
-import android.widget.TextView
+import com.example.playlistmaker.domain.models.AudioPlayerState
 
 interface PlayerRepository {
 
-    fun startPlayer(playBtn: ImageButton)
+    fun startPlayer(callback: () -> Unit)
 
-    fun pausePlayer(playBtn: ImageButton)
+    fun pausePlayer(callback: () -> Unit)
 
-    fun preparePlayer(playBtn: ImageButton, timePlaying: TextView, recordsUrl: String?)
+    fun preparePlayer(recordsUrl: String?)
+    fun setOnPreparedCallback(callback: () -> Unit)
+    fun setOnCompletionCallBack(callback: () -> Unit)
 
-    fun playBackControl(playBtn: ImageButton, timePlaying: TextView)
-
-    fun createPlayingTimer(startTime: Long, timePlaying: TextView): Runnable
+    fun setOnChangePlayerListener(listener: (AudioPlayerState) -> Unit)
 }
