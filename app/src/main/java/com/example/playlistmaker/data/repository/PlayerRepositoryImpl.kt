@@ -8,19 +8,21 @@ import com.example.playlistmaker.domain.repository.PlayerRepository
 class PlayerRepositoryImpl(val context: Context) : PlayerRepository {
 
 
-    private var preparedCallback: (() -> Unit)? = null
+    //private var preparedCallback: (() -> Unit)? = null
     private var audioPlayerListener: ((AudioPlayerState) -> Unit)? = null
-    private var playerState = AudioPlayerState.DEFAULT
+    var playerState = AudioPlayerState.DEFAULT
     private val mediaPlayer = MediaPlayer()
 
 
     override fun startPlayer(callback: () -> Unit) {
         mediaPlayer.start()
+        audioPlayerListener?.invoke(AudioPlayerState.PLAYING)
         playerState = AudioPlayerState.PLAYING
     }
 
     override fun pausePlayer(callback: () -> Unit) {
         mediaPlayer.pause()
+        audioPlayerListener?.invoke(AudioPlayerState.PAUSED)
         playerState = AudioPlayerState.PAUSED
     }
 
@@ -28,17 +30,17 @@ class PlayerRepositoryImpl(val context: Context) : PlayerRepository {
         mediaPlayer.setDataSource(recordsUrl)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
-            preparedCallback?.invoke()
+            audioPlayerListener?.invoke(AudioPlayerState.PREPARED)
+            playerState = AudioPlayerState.PREPARED
         }
     }
 
-
-    override fun setOnPreparedCallback(callback: () -> Unit) {
-        preparedCallback = callback
+    override fun getCurrentPosition() : Int{
+        return mediaPlayer.currentPosition
     }
 
-    override fun setOnCompletionCallBack(callback: () -> Unit) {
-        playerState = AudioPlayerState.PREPARED
+    override fun releasePlayer() {
+        mediaPlayer.release()
     }
 
     override fun setOnChangePlayerListener(listener: (AudioPlayerState) -> Unit) {
