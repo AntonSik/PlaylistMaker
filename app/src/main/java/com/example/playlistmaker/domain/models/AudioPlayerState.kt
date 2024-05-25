@@ -5,5 +5,6 @@ enum class AudioPlayerState {
     PREPARED,
     PLAYING,
     PAUSED,
-
+    COMPLETED,
+    DELETED
 }

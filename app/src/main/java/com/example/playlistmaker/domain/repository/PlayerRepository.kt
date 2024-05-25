@@ -8,11 +8,12 @@ interface PlayerRepository {
 
     fun pausePlayer(callback: () -> Unit)
 
+    fun getDefault()
+
     fun preparePlayer(recordsUrl: String?)
-//    fun setOnPreparedCallback(callback: () -> Unit)
-//    fun setOnCompletionCallBack(callback: () -> Unit)
+
     fun getCurrentPosition():Int
-    fun releasePlayer()
+    fun releasePlayer(callback: () -> Unit)
 
     fun setOnChangePlayerListener(listener: (AudioPlayerState) -> Unit)
 }

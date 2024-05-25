@@ -65,50 +65,60 @@ class AudioPlayerActivity : AppCompatActivity() {
         imageArrow.setOnClickListener { finish() }
 
         playerRepository.setOnChangePlayerListener { state ->
-            //playBackControl(state)
-            playerState = state
+//            playBackControl(state)
+             playerState = state
         }
     }
 
     override fun onPause() {
         super.onPause()
-        playerRepository.pausePlayer { playBtn.setImageResource(R.drawable.play_vector) }
+        playerRepository.pausePlayer {}
+            playBtn.setImageResource(R.drawable.play_vector)
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        playerRepository.releasePlayer()
+        playerRepository.releasePlayer{}
+        Log.d("ACT", " player is deleted")
         handler.removeCallbacksAndMessages(null)
     }
 
     private fun playBackControl(state: AudioPlayerState) {
         when (state) {
             AudioPlayerState.PLAYING -> {
-                playerRepository.pausePlayer {
-
-                        playBtn.setImageResource(R.drawable.play_vector)
-                    Log.d("PlayerActivity"," player is playing")
-                }
+                playerRepository.pausePlayer {}
+                playBtn.setImageResource(R.drawable.play_vector)
                 handler.removeCallbacksAndMessages(null)
+                Log.d("ACT","track prepared")
             }
 
-            AudioPlayerState.PREPARED, AudioPlayerState.PAUSED -> {
+            AudioPlayerState.PREPARED,AudioPlayerState.PAUSED  -> {
 
-                playerRepository.startPlayer {
-
-                        playBtn.setImageResource(R.drawable.pause_vector)
-                    Log.d("PlayerActivity"," player is paused")
-                }
-                val startPlaying = System.currentTimeMillis()   //время начала отсчета
+                playerRepository.startPlayer {}
+                playBtn.setImageResource(R.drawable.pause_vector)
+                val startPlaying = System.currentTimeMillis()
                 handler.post(createPlayingTimer(startPlaying))
+                Log.d("ACT","track playing")
             }
+            AudioPlayerState.COMPLETED -> {
 
+                    timePlaying.text = getString(R.string.zero)
+                    playBtn.setImageResource(R.drawable.play_vector)
+                    handler.removeCallbacksAndMessages(null)
+
+            }
 
             AudioPlayerState.DEFAULT -> {
                 playerRepository.preparePlayer(recordsUrl)
+
             }
 
+            AudioPlayerState.DELETED -> {
+                playerRepository.getDefault()
+                handler.removeCallbacksAndMessages(null)
 
+            }
         }
     }
 
