@@ -1,15 +1,13 @@
 package com.example.playlistmaker.data.repository
 
-import android.content.Context
+
 import android.media.MediaPlayer
-import android.util.Log
 import com.example.playlistmaker.domain.models.AudioPlayerState
 import com.example.playlistmaker.domain.repository.PlayerRepository
 
-class PlayerRepositoryImpl(val context: Context) : PlayerRepository {
+class PlayerRepositoryImpl : PlayerRepository {
 
-
-    //private var preparedCallback: (() -> Unit)? = null
+    private var completionCallback: (() -> Unit)? = null
     private var audioPlayerListener: ((AudioPlayerState) -> Unit)? = null
     private val mediaPlayer = MediaPlayer()
 
@@ -17,13 +15,11 @@ class PlayerRepositoryImpl(val context: Context) : PlayerRepository {
     override fun startPlayer(callback: () -> Unit) {
         mediaPlayer.start()
         audioPlayerListener?.invoke(AudioPlayerState.PLAYING)
-        Log.d("IMPL"," player is playing")
     }
 
     override fun pausePlayer(callback: () -> Unit) {
         mediaPlayer.pause()
         audioPlayerListener?.invoke(AudioPlayerState.PAUSED)
-        Log.d("IMPL"," player is paused")
     }
 
     override fun preparePlayer(recordsUrl: String?) {
@@ -33,20 +29,23 @@ class PlayerRepositoryImpl(val context: Context) : PlayerRepository {
         mediaPlayer.setOnPreparedListener {
             audioPlayerListener?.invoke(AudioPlayerState.PREPARED)
 
-
         }
         mediaPlayer.setOnCompletionListener {
-            audioPlayerListener?.invoke(AudioPlayerState.COMPLETED)
-
+            completionCallback?.invoke()
+            audioPlayerListener?.invoke(AudioPlayerState.PREPARED)
         }
-
     }
 
-    override fun getDefault() {
+    override fun setOnCompletionCallback(callback: () -> Unit) {
+        completionCallback = callback
+    }
+
+
+    override fun getDefault(callback: () -> Unit) {
         audioPlayerListener?.invoke(AudioPlayerState.DEFAULT)
     }
 
-    override fun getCurrentPosition() : Int{
+    override fun getCurrentPosition(): Int {
         return mediaPlayer.currentPosition
     }
 

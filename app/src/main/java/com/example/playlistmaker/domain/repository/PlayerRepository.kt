@@ -8,9 +8,10 @@ interface PlayerRepository {
 
     fun pausePlayer(callback: () -> Unit)
 
-    fun getDefault()
+    fun getDefault(callback: () -> Unit)
 
     fun preparePlayer(recordsUrl: String?)
+    fun setOnCompletionCallback(callback: () -> Unit)
 
     fun getCurrentPosition():Int
     fun releasePlayer(callback: () -> Unit)

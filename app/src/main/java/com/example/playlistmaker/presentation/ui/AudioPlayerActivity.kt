@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageButton
@@ -26,7 +25,9 @@ class AudioPlayerActivity : AppCompatActivity() {
         private const val UPDATING_DELAY = 400L
     }
 
-    val playerRepository by lazy { App.INSTANCE.playerRepository }
+    private val playerRepository by lazy { App.INSTANCE.getRepository() }
+    private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
+    private val imageArrow by lazy { findViewById<ImageButton>(R.id.ib_arrowBack) }
     private lateinit var coverTrack: ImageView
     private lateinit var nameTrack: TextView
     private lateinit var artistsTrack: TextView
@@ -39,12 +40,9 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var countryTrack: TextView
     private lateinit var timePlaying: TextView
     private lateinit var playBtn: ImageButton
+    private lateinit var playerState: AudioPlayerState
     private var recordsUrl: String? = null
-    private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
-
-
-    val handler = Handler(Looper.getMainLooper())
-    var playerState = AudioPlayerState.DEFAULT
+    private val handler = Handler(Looper.getMainLooper())
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,11 +51,9 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         val selectedTrack = intent.getParcelableExtra<Track>(CLICKED_ITEM)
 
-        val imageArrow = findViewById<ImageButton>(R.id.ib_arrowBack)
         init()
         bind(selectedTrack)
         playerRepository.preparePlayer(recordsUrl)
-
         playBtn.setOnClickListener {
             playBackControl(playerState)
         }
@@ -65,59 +61,52 @@ class AudioPlayerActivity : AppCompatActivity() {
         imageArrow.setOnClickListener { finish() }
 
         playerRepository.setOnChangePlayerListener { state ->
-//            playBackControl(state)
-             playerState = state
+            playerState = state
+        }
+        playerRepository.setOnCompletionCallback {
+            timePlaying.text = getString(R.string.zero)
+            playBtn.setImageResource(R.drawable.play_vector)
+            handler.removeCallbacksAndMessages(null)
         }
     }
 
     override fun onPause() {
         super.onPause()
         playerRepository.pausePlayer {}
-            playBtn.setImageResource(R.drawable.play_vector)
+        playBtn.setImageResource(R.drawable.play_vector)
 
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        playerRepository.releasePlayer{}
-        Log.d("ACT", " player is deleted")
+        playerRepository.releasePlayer {}
         handler.removeCallbacksAndMessages(null)
     }
 
     private fun playBackControl(state: AudioPlayerState) {
         when (state) {
             AudioPlayerState.PLAYING -> {
+
                 playerRepository.pausePlayer {}
                 playBtn.setImageResource(R.drawable.play_vector)
                 handler.removeCallbacksAndMessages(null)
-                Log.d("ACT","track prepared")
             }
 
-            AudioPlayerState.PREPARED,AudioPlayerState.PAUSED  -> {
+            AudioPlayerState.PREPARED, AudioPlayerState.PAUSED -> {
 
                 playerRepository.startPlayer {}
                 playBtn.setImageResource(R.drawable.pause_vector)
                 val startPlaying = System.currentTimeMillis()
                 handler.post(createPlayingTimer(startPlaying))
-                Log.d("ACT","track playing")
-            }
-            AudioPlayerState.COMPLETED -> {
-
-                    timePlaying.text = getString(R.string.zero)
-                    playBtn.setImageResource(R.drawable.play_vector)
-                    handler.removeCallbacksAndMessages(null)
-
             }
 
             AudioPlayerState.DEFAULT -> {
                 playerRepository.preparePlayer(recordsUrl)
-
             }
 
             AudioPlayerState.DELETED -> {
-                playerRepository.getDefault()
+                playerRepository.getDefault {}
                 handler.removeCallbacksAndMessages(null)
-
             }
         }
     }
@@ -132,6 +121,7 @@ class AudioPlayerActivity : AppCompatActivity() {
                     if (playerState == AudioPlayerState.PLAYING) {
                         timePlaying.text = dateFormat.format(playerRepository.getCurrentPosition())
                         handler.postDelayed(this, UPDATING_DELAY)
+
                     }
                 }
 
@@ -193,6 +183,8 @@ class AudioPlayerActivity : AppCompatActivity() {
         countryTrack = findViewById(R.id.tv_enterCountry)
         timePlaying = findViewById(R.id.tv_timePlaying)
         playBtn = findViewById(R.id.btn_play)
+        playerState = AudioPlayerState.DEFAULT
+
     }
 
 
