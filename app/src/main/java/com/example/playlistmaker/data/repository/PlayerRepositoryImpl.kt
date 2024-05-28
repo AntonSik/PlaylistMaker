@@ -12,12 +12,12 @@ class PlayerRepositoryImpl : PlayerRepository {
     private val mediaPlayer = MediaPlayer()
 
 
-    override fun startPlayer(callback: () -> Unit) {
+    override fun startPlayer() {
         mediaPlayer.start()
         audioPlayerListener?.invoke(AudioPlayerState.PLAYING)
     }
 
-    override fun pausePlayer(callback: () -> Unit) {
+    override fun pausePlayer() {
         mediaPlayer.pause()
         audioPlayerListener?.invoke(AudioPlayerState.PAUSED)
     }
@@ -41,7 +41,7 @@ class PlayerRepositoryImpl : PlayerRepository {
     }
 
 
-    override fun getDefault(callback: () -> Unit) {
+    override fun getDefault() {
         audioPlayerListener?.invoke(AudioPlayerState.DEFAULT)
     }
 
@@ -49,7 +49,7 @@ class PlayerRepositoryImpl : PlayerRepository {
         return mediaPlayer.currentPosition
     }
 
-    override fun releasePlayer(callback: () -> Unit) {
+    override fun releasePlayer() {
         mediaPlayer.release()
         audioPlayerListener?.invoke(AudioPlayerState.DELETED)
     }

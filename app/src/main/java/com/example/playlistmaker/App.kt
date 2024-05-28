@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.data.repository.PlayerRepositoryImpl
-
+import com.example.playlistmaker.domain.repository.PlayerRepository
 
 
 class App : Application() {
@@ -17,7 +17,7 @@ class App : Application() {
 
     var darkTheme = false
     private lateinit var sharedPrefs : SharedPreferences
-    fun getRepository() = PlayerRepositoryImpl()
+    fun getRepository() : PlayerRepository = PlayerRepositoryImpl()
 
     override fun onCreate() {
         super.onCreate()

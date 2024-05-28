@@ -4,17 +4,17 @@ import com.example.playlistmaker.domain.models.AudioPlayerState
 
 interface PlayerRepository {
 
-    fun startPlayer(callback: () -> Unit)
+    fun startPlayer()
 
-    fun pausePlayer(callback: () -> Unit)
+    fun pausePlayer()
 
-    fun getDefault(callback: () -> Unit)
+    fun getDefault()
 
     fun preparePlayer(recordsUrl: String?)
     fun setOnCompletionCallback(callback: () -> Unit)
 
     fun getCurrentPosition():Int
-    fun releasePlayer(callback: () -> Unit)
+    fun releasePlayer()
 
     fun setOnChangePlayerListener(listener: (AudioPlayerState) -> Unit)
 }

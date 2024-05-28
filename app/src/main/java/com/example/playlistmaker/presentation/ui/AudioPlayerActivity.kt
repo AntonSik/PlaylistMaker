@@ -72,14 +72,14 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        playerRepository.pausePlayer {}
+        playerRepository.pausePlayer()
         playBtn.setImageResource(R.drawable.play_vector)
 
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        playerRepository.releasePlayer {}
+        playerRepository.releasePlayer()
         handler.removeCallbacksAndMessages(null)
     }
 
@@ -87,14 +87,14 @@ class AudioPlayerActivity : AppCompatActivity() {
         when (state) {
             AudioPlayerState.PLAYING -> {
 
-                playerRepository.pausePlayer {}
+                playerRepository.pausePlayer()
                 playBtn.setImageResource(R.drawable.play_vector)
                 handler.removeCallbacksAndMessages(null)
             }
 
             AudioPlayerState.PREPARED, AudioPlayerState.PAUSED -> {
 
-                playerRepository.startPlayer {}
+                playerRepository.startPlayer()
                 playBtn.setImageResource(R.drawable.pause_vector)
                 val startPlaying = System.currentTimeMillis()
                 handler.post(createPlayingTimer(startPlaying))
@@ -105,7 +105,7 @@ class AudioPlayerActivity : AppCompatActivity() {
             }
 
             AudioPlayerState.DELETED -> {
-                playerRepository.getDefault {}
+                playerRepository.getDefault()
                 handler.removeCallbacksAndMessages(null)
             }
         }
