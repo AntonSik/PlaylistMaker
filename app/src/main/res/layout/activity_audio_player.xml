@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".AudioPlayerActivity">
+    tools:context=".presentation.ui.AudioPlayerActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
@@ -157,6 +157,7 @@
             app:layout_constraintEnd_toStartOf="@id/rightBorder"
             app:layout_constraintStart_toEndOf="@id/barrier2"
             app:layout_constraintTop_toBottomOf="@id/tv_timePlaying"
+            android:text="@string/zero"
             tools:text="5:35" />
 
         <TextView
