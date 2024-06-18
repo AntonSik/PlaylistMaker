@@ -87,26 +87,18 @@ class SearchActivity : AppCompatActivity() {
                 savedText = s.toString()
                 binding.placeholder.visibility = View.GONE
                 binding.clearIcon.visibility = clearButtonVisibility(s)
+                viewModel.searchDebounce(changedText = s?.toString() ?: "")
                 if (binding.inputEditText.hasFocus() && binding.inputEditText.text.isNotEmpty()) {
                     trackAdapter.tracks.clear()
                     binding.rvRecycleView.adapter = trackAdapter
+                    binding.placeholder.visibility = View.GONE
                     binding.bClearHistoryBtn.visibility = View.GONE
                     binding.tvSearched.visibility = View.GONE
-                    viewModel.searchDebounce(changedText = s?.toString() ?: "")
 
-
+                }else if (binding.inputEditText.hasFocus() && binding.inputEditText.text.isEmpty() && viewModel.getHistory().isEmpty()) {
+                    showContent(trackList)
                 }else {
-                    historyAdapter.tracks = viewModel.getHistory()
-                    binding.rvRecycleView.adapter = historyAdapter
-                    trackAdapter.notifyDataSetChanged()
-                    binding.rvRecycleView.visibility = View.VISIBLE
-                    binding.bClearHistoryBtn.visibility = View.VISIBLE
-                    binding.tvSearched.visibility = View.VISIBLE
-                    binding.placeholder.visibility = View.GONE
-                    binding.bPlaceholderUpdateBtn.visibility = View.GONE
-                    binding.ivPlaceholderImage.visibility = View.GONE
-                    binding.tvPlaceholderMessage.visibility = View.GONE
-                    binding.tvPlaceholderMessageExtra.visibility = View.GONE
+                    showHistory()
                 }
             }
 
@@ -127,29 +119,16 @@ class SearchActivity : AppCompatActivity() {
 
         })
         binding.inputEditText.setOnFocusChangeListener { view, hasFocus ->
-            if (hasFocus && binding.inputEditText.text.isEmpty() && viewModel.getHistory().isNotEmpty()) {
+            if (hasFocus && binding.inputEditText.text.isEmpty() && viewModel.getHistory()
+                    .isNotEmpty()
+            ) {
 
-                binding.rvRecycleView.adapter = historyAdapter
-                binding.bClearHistoryBtn.visibility =
-                    View.VISIBLE                                   // Кейс когда история поиска не пуста
-                binding.tvSearched.visibility = View.VISIBLE
-                binding.placeholder.visibility = View.GONE
-                binding.bPlaceholderUpdateBtn.visibility = View.GONE
-                binding.ivPlaceholderImage.visibility = View.GONE
-                binding.tvPlaceholderMessage.visibility = View.GONE
-                binding.tvPlaceholderMessageExtra.visibility = View.GONE
+                showHistory()                               // Кейс когда история поиска не пуста
 
-            } else {
-                binding.rvRecycleView.adapter = trackAdapter
-                binding.bClearHistoryBtn.visibility = View.GONE         // Кейс когда история пуста
-                binding.tvSearched.visibility = View.GONE
+            }else {
 
-                trackAdapter.notifyDataSetChanged()
-                binding.placeholder.visibility = View.GONE
-                binding.bPlaceholderUpdateBtn.visibility = View.GONE
-                binding.ivPlaceholderImage.visibility = View.GONE
-                binding.tvPlaceholderMessage.visibility = View.GONE
-                binding.tvPlaceholderMessageExtra.visibility = View.GONE
+                showContent(trackList)                      // Кейс когда история пуста
+
             }
         }
 
@@ -261,6 +240,20 @@ class SearchActivity : AppCompatActivity() {
             is SearchState.Empty -> showEmpty(state.message)
             is SearchState.Content -> showContent(state.tracks)
         }
+    }
+    private fun showHistory(){
+        binding.placeholder.visibility = View.GONE
+        binding.bPlaceholderUpdateBtn.visibility = View.GONE
+        binding.ivPlaceholderImage.visibility = View.GONE
+        binding.tvPlaceholderMessage.visibility = View.GONE
+        binding.tvPlaceholderMessageExtra.visibility = View.GONE
+
+        historyAdapter.tracks = viewModel.getHistory()
+        binding.rvRecycleView.adapter = historyAdapter
+        trackAdapter.notifyDataSetChanged()
+        binding.rvRecycleView.visibility = View.VISIBLE
+        binding.bClearHistoryBtn.visibility = View.VISIBLE
+        binding.tvSearched.visibility = View.VISIBLE
     }
 
 }
