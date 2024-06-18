@@ -12,6 +12,7 @@ class PlayerRepositoryImpl : PlayerRepository {
     private val mediaPlayer = MediaPlayer()
 
 
+
     override fun startPlayer() {
         mediaPlayer.start()
         audioPlayerListener?.invoke(AudioPlayerState.PLAYING)
@@ -52,9 +53,5 @@ class PlayerRepositoryImpl : PlayerRepository {
     override fun releasePlayer() {
         mediaPlayer.release()
         audioPlayerListener?.invoke(AudioPlayerState.DELETED)
-    }
-
-    override fun setOnChangePlayerListener(listener: (AudioPlayerState) -> Unit) {
-        audioPlayerListener = listener
     }
 }

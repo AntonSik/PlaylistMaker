@@ -1,20 +1,15 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.data.storage
 
-import android.content.Context
+import android.content.SharedPreferences
 import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class HistoryPrefs(context: Context) {
-    companion object {
-        const val SHARED_PREFERENCES_HISTORY = "Shared pref's key"
+class LocalStorage(private val sharedPrefs: SharedPreferences) {
+    private companion object {
         private const val KEY_FOR_TRACK_LIST = "New List's key"
         private const val MAX_HISTORY_SIZE = 10
     }
-
-    private val sharedPrefs =
-        context.getSharedPreferences(SHARED_PREFERENCES_HISTORY, Context.MODE_PRIVATE)
-
     private fun saveList(historyTrackList: ArrayList<Track>) {    // Метод сохранения листа в sharedPreferences
 
         val trackListJson = Gson().toJson(historyTrackList)
@@ -52,5 +47,6 @@ class HistoryPrefs(context: Context) {
         historyList.clear()
         saveList(historyList)
     }
+
 
 }

@@ -1,31 +1,27 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.utils
 
 import android.app.Application
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.data.repository.PlayerRepositoryImpl
-import com.example.playlistmaker.domain.repository.PlayerRepository
 
 
 class App : Application() {
     companion object {
         const val KEY_THEME_SWITCHER = "key for switcher"
-        internal lateinit var INSTANCE: App
-            private set
+        const val SHARED_PREFERENCES = "Shared pref's key"
     }
 
     var darkTheme = false
+
+
     private lateinit var sharedPrefs : SharedPreferences
-    fun getRepository() : PlayerRepository = PlayerRepositoryImpl()
 
     override fun onCreate() {
         super.onCreate()
 
-        INSTANCE = this
 
-
-        sharedPrefs = getSharedPreferences(HistoryPrefs.SHARED_PREFERENCES_HISTORY, MODE_PRIVATE)
+        sharedPrefs = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
         darkTheme = sharedPrefs.getBoolean(
             KEY_THEME_SWITCHER,
             resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
@@ -45,6 +41,7 @@ class App : Application() {
             }
         )
         sharedPrefs.edit().putBoolean(KEY_THEME_SWITCHER, darkTheme).apply()
+
     }
 }
 
