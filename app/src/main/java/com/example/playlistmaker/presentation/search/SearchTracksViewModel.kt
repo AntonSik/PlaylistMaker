@@ -37,6 +37,9 @@ class SearchTracksViewModel(application: Application) : AndroidViewModel(applica
     private val stateLiveData = MutableLiveData<SearchState>()
     fun observeState(): LiveData<SearchState> = stateLiveData
 
+    private val trackListMutable = MutableLiveData<List<Track>>()
+    val trackListLiveData: LiveData<List<Track>> = trackListMutable
+
 
     override fun onCleared() {
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
@@ -96,6 +99,7 @@ class SearchTracksViewModel(application: Application) : AndroidViewModel(applica
                                         tracks = trackList,
                                     )
                                 )
+                                trackListMutable.postValue(trackList)
                             }
                         }
 

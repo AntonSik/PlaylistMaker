@@ -95,7 +95,10 @@ class SearchActivity : AppCompatActivity() {
                     binding.bClearHistoryBtn.visibility = View.GONE
                     binding.tvSearched.visibility = View.GONE
 
+
                 }else if (binding.inputEditText.hasFocus() && binding.inputEditText.text.isEmpty() && viewModel.getHistory().isEmpty()) {
+                    showContent(trackList)
+                }else if (binding.inputEditText.hasFocus() && binding.inputEditText.text.isNotEmpty()) {
                     showContent(trackList)
                 }else {
                     showHistory()
@@ -122,11 +125,9 @@ class SearchActivity : AppCompatActivity() {
             if (hasFocus && binding.inputEditText.text.isEmpty() && viewModel.getHistory()
                     .isNotEmpty()
             ) {
-
                 showHistory()                               // Кейс когда история поиска не пуста
 
             }else {
-
                 showContent(trackList)                      // Кейс когда история пуста
 
             }
@@ -134,6 +135,9 @@ class SearchActivity : AppCompatActivity() {
 
         viewModel.observeState().observe(this) {
             render(it)
+        }
+        viewModel.trackListLiveData.observe(this){trackListLive ->
+            trackList = ArrayList(trackListLive)
         }
 
     }
@@ -231,6 +235,7 @@ class SearchActivity : AppCompatActivity() {
         trackAdapter.tracks.clear()
         trackAdapter.tracks.addAll(trackList)
         trackAdapter.notifyDataSetChanged()
+        binding.rvRecycleView.adapter = trackAdapter
     }
 
     private fun render(state: SearchState) {
@@ -250,7 +255,7 @@ class SearchActivity : AppCompatActivity() {
 
         historyAdapter.tracks = viewModel.getHistory()
         binding.rvRecycleView.adapter = historyAdapter
-        trackAdapter.notifyDataSetChanged()
+        historyAdapter.notifyDataSetChanged()
         binding.rvRecycleView.visibility = View.VISIBLE
         binding.bClearHistoryBtn.visibility = View.VISIBLE
         binding.tvSearched.visibility = View.VISIBLE
