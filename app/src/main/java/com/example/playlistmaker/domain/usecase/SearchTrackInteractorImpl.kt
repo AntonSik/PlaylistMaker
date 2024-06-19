@@ -6,15 +6,21 @@ import com.example.playlistmaker.domain.repository.SearchTracksRepository
 import com.example.playlistmaker.utils.Resource
 import java.util.concurrent.Executors
 
-class SearchTrackInteractorImpl(private val repository: SearchTracksRepository): SearchTrackInteracktor {
+class SearchTrackInteractorImpl(private val repository: SearchTracksRepository) :
+    SearchTrackInteracktor {
     private val executor = Executors.newCachedThreadPool()
 
 
     override fun searchTracks(expression: String, consumer: SearchTrackInteracktor.TracksConsumer) {
         executor.execute {
-            when(val resource = repository.searchTracks(expression)){
-                is Resource.Success -> {consumer.consume(resource.data, null)}
-                is Resource.Error ->{consumer.consume(null,resource.message)}
+            when (val resource = repository.searchTracks(expression)) {
+                is Resource.Success -> {
+                    consumer.consume(resource.data, null)
+                }
+
+                is Resource.Error -> {
+                    consumer.consume(null, resource.message)
+                }
             }
         }
     }

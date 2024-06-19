@@ -25,11 +25,15 @@ object Creator {
         return SearchTracksRepositoryImpl(
             RetrofitNetworkClient(context),
             LocalStorage(context.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE)),
+            context = context
         )
-    } private fun getPlayerRepository(): PlayerRepository{
+    }
+
+    private fun getPlayerRepository(): PlayerRepository {
         return PlayerRepositoryImpl()
     }
-    fun providePlayerInteractor(): PlayerInteractor{
+
+    fun providePlayerInteractor(): PlayerInteractor {
         return PlayerInteractorImpl(getPlayerRepository())
     }
 
@@ -46,7 +50,11 @@ object Creator {
     }
 
     fun provideSettingsRepository(context: Context): SettingsRepository {
-        return SettingsRepositoryImpl(context)
+        return SettingsRepositoryImpl(
+            context = context, sharedPrefs = context.getSharedPreferences(
+                SHARED_PREFERENCES, Context.MODE_PRIVATE
+            )
+        )
     }
 
 }

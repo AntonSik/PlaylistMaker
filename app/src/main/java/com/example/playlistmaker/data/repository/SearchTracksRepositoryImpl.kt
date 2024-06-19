@@ -1,5 +1,8 @@
 package com.example.playlistmaker.data.repository
 
+
+import android.content.Context
+import com.example.playlistmaker.R
 import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.dto.SearchTrackRequest
 import com.example.playlistmaker.data.dto.SearchTrackResponse
@@ -10,13 +13,14 @@ import com.example.playlistmaker.utils.Resource
 
 class SearchTracksRepositoryImpl(
     private val networkClient: NetworkClient,
-    val localStorage: LocalStorage
+    private val localStorage: LocalStorage,
+    private val context: Context
 ) : SearchTracksRepository {
     override fun searchTracks(expression: String): Resource<List<Track>> {
         val response = networkClient.doRequest(SearchTrackRequest(expression))
         return when (response.resultCode) {
             -1 -> {
-                Resource.Error("Проверьте подключение к интернету")
+                Resource.Error(context.getString(R.string.check_internet_connection))
             }
 
             200 -> {
@@ -38,16 +42,17 @@ class SearchTracksRepositoryImpl(
             }
 
             else -> {
-                Resource.Error("Ошибка сервера")
+                Resource.Error(context.getString(R.string.server_error))
             }
         }
     }
-   override fun addTrack(track: Track) {
-       localStorage.addTrack(track)
+
+    override fun addTrack(track: Track) {
+        localStorage.addTrack(track)
     }
 
     override fun getHistoryList(): ArrayList<Track> {
-       return localStorage.getHistoryList()
+        return localStorage.getHistoryList()
     }
 
     override fun clearHistory() {

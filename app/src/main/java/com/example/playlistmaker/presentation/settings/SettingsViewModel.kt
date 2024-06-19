@@ -26,16 +26,15 @@ class SettingsViewModel(
     private val sharingInteractor: SharingInteractor =
         Creator.provideSharingInteractor(getApplication())
     private val settingsRepository = Creator.provideSettingsRepository(getApplication())
-    private val storage = settingsRepository.getThemeStorage()
 
 
     fun getTheme(): Boolean {
-        return settingsRepository.getTheme(storage)
+        return settingsRepository.getTheme()
     }
 
     fun changeTheme(checked: Boolean) {
         (getApplication<Application>() as App).switchTheme(checked)
-        settingsRepository.updateThemeStorage(storage, checked)
+        settingsRepository.updateThemeStorage(checked)
     }
 
     fun shareApp(): String {

@@ -4,6 +4,7 @@ import android.app.Application
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -63,6 +64,7 @@ class SearchTracksViewModel(application: Application) : AndroidViewModel(applica
     private fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
             renderState(SearchState.Loading)
+            Log.d("viewModel", "LOADING_VALUE${stateLiveData.value}")
 
             searchInteractor.searchTracks(
                 newSearchText,
@@ -79,9 +81,10 @@ class SearchTracksViewModel(application: Application) : AndroidViewModel(applica
                                 renderState(
                                     SearchState.Error(
                                         errorMessage = getApplication<Application>().getString(R.string.no_internet_connection),
-                                        errorMessageExtra = getApplication<Application>().getString(R.string.no_internet_connection_extra)
+                                        errorMessageExtra = getApplication<Application>().getString(
+                                            R.string.no_internet_connection_extra
+                                        )
                                     )
-
                                 )
                             }
 
@@ -97,19 +100,22 @@ class SearchTracksViewModel(application: Application) : AndroidViewModel(applica
                                 renderState(
                                     SearchState.Content(
                                         tracks = trackList,
+                                        isHistory = false
                                     )
                                 )
+
                                 trackListMutable.postValue(trackList)
                             }
+
                         }
 
                     }
 
                 })
-
         }
     }
-    fun resetLastSearchedText(){
+
+    fun resetLastSearchedText() {
         lastSearchText = null
     }
 
@@ -118,7 +124,7 @@ class SearchTracksViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun getHistory(): ArrayList<Track> {
-       return searchInteractor.getHistoryList()
+        return searchInteractor.getHistoryList()
     }
 
     fun clearHistory() {
@@ -127,5 +133,34 @@ class SearchTracksViewModel(application: Application) : AndroidViewModel(applica
 
     private fun renderState(state: SearchState) {
         stateLiveData.postValue(state)
+
+    }
+
+    private fun getHistoryState() {
+        renderState(
+            SearchState.History(
+                history = getHistory(),
+                isHistory = true
+            )
+        )
+
+    }
+
+    private fun getContentState() {
+        renderState(
+            SearchState.Content(
+                tracks = trackListLiveData.value ?: emptyList(),
+                isHistory = false
+            )
+        )
+    }
+
+    fun setHistoryFlag(isHistory: Boolean) {
+        when (isHistory) {
+
+            true -> getHistoryState()
+
+            false -> getContentState()
+        }
     }
 }

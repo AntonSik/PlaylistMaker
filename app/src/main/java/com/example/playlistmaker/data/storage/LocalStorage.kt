@@ -10,6 +10,7 @@ class LocalStorage(private val sharedPrefs: SharedPreferences) {
         private const val KEY_FOR_TRACK_LIST = "New List's key"
         private const val MAX_HISTORY_SIZE = 10
     }
+
     private fun saveList(historyTrackList: ArrayList<Track>) {    // Метод сохранения листа в sharedPreferences
 
         val trackListJson = Gson().toJson(historyTrackList)

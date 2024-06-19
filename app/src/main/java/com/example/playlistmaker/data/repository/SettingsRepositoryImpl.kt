@@ -1,24 +1,25 @@
 package com.example.playlistmaker.data.repository
 
 import android.content.Context
-import com.example.playlistmaker.data.storage.ThemeStorage
+import android.content.SharedPreferences
 import com.example.playlistmaker.domain.repository.SettingsRepository
-import com.example.playlistmaker.utils.App.Companion.SHARED_PREFERENCES
+import com.example.playlistmaker.utils.App
+
 
 class SettingsRepositoryImpl(
-
+    private val sharedPrefs: SharedPreferences,
     val context: Context
-):SettingsRepository {
-    override fun getThemeStorage(): ThemeStorage {
-      return ThemeStorage(context.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE))
+) : SettingsRepository {
+
+    override fun getTheme(): Boolean {
+         return sharedPrefs.getBoolean(App.KEY_THEME_SWITCHER, false)
     }
 
-    override fun getTheme(themeStorage: ThemeStorage): Boolean {
-        return themeStorage.getTheme()
-    }
-
-    override fun updateThemeStorage(themeStorage: ThemeStorage, theme: Boolean) {
-        themeStorage.updateTheme(theme)
+    override fun updateThemeStorage( theme: Boolean) {
+        sharedPrefs
+            .edit()
+            .putBoolean(App.KEY_THEME_SWITCHER, theme)
+            .apply()
     }
 
 }

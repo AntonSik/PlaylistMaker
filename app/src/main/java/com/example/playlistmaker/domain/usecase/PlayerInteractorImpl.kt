@@ -3,20 +3,20 @@ package com.example.playlistmaker.domain.usecase
 import com.example.playlistmaker.domain.api.PlayerInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.PlayerRepository
-import com.example.playlistmaker.ui.audioPlayer.models.PlayerModel
+import com.example.playlistmaker.domain.models.PlayerModel
 
-class PlayerInteractorImpl(val repository: PlayerRepository): PlayerInteractor {
-    override fun loadTrackData(track: Track?, onComplete: (PlayerModel)->Unit) {
+class PlayerInteractorImpl(val repository: PlayerRepository) : PlayerInteractor {
+    override fun loadTrackData(track: Track?, onComplete: (PlayerModel) -> Unit) {
         track?.let {
             val playerModel = PlayerModel(
                 trackId = track.trackId,
                 trackName = track.trackName,
                 artistName = track.artistName,
-                trackTimeMillis= track.trackTimeMillis,
-                artworkUrl100= track.artworkUrl100,
-                collectionName= track.collectionName,
-                primaryGenreName= track.primaryGenreName,
-                releaseDate= track.releaseDate,
+                trackTimeMillis = track.trackTimeMillis,
+                artworkUrl100 = track.artworkUrl100,
+                collectionName = track.collectionName,
+                primaryGenreName = track.primaryGenreName,
+                releaseDate = track.releaseDate,
                 country = track.country,
                 previewUrl = track.previewUrl,
             )
@@ -46,11 +46,11 @@ class PlayerInteractorImpl(val repository: PlayerRepository): PlayerInteractor {
     }
 
     override fun getCurrentPosition(): Int {
-       return repository.getCurrentPosition()
+        return repository.getCurrentPosition()
     }
 
     override fun setOnCompletionCallback(callback: () -> Unit) {
-       repository.setOnCompletionCallback(callback)
+        repository.setOnCompletionCallback(callback)
     }
 
 }

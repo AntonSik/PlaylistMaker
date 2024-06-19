@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.example.playlistmaker.domain.models.Track
 
-data class TrackDto (
+data class TrackDto(
     val trackId: Int,
     val trackName: String,
     val artistName: String,

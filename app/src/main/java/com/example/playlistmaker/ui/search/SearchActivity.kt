@@ -22,7 +22,6 @@ import com.example.playlistmaker.ui.search.models.SearchState
 class SearchActivity : AppCompatActivity() {
 
     companion object {
-        private const val INPUT_TEXT = "INPUT_EDIT"
         const val CLICKED_ITEM = "clicked track"
         private const val CLICK_DEBOUNCE_DELAY = 2000L
 
@@ -35,10 +34,8 @@ class SearchActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var viewModel: SearchTracksViewModel
 
-    private lateinit var trackList: ArrayList<Track>
-    private lateinit var historyTracks: ArrayList<Track>
     private lateinit var trackAdapter: TrackAdapter
-    private lateinit var historyAdapter: TrackAdapter
+
 
     private var textWatcher: TextWatcher? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +49,6 @@ class SearchActivity : AppCompatActivity() {
             SearchTracksViewModel.getViewModelFactory()
         )[SearchTracksViewModel::class.java]
 
-        savedText = savedInstanceState?.getString(INPUT_TEXT)
         init()
 
         binding.arrow2.setOnClickListener {
@@ -61,15 +57,14 @@ class SearchActivity : AppCompatActivity() {
 
         binding.clearIcon.setOnClickListener {
             binding.inputEditText.setText("")
-            trackList.clear()
+            trackAdapter.tracks.clear()
+            trackAdapter.notifyDataSetChanged()
             hideKeyboard()
 
         }
         binding.bClearHistoryBtn.setOnClickListener {
             viewModel.clearHistory()
-            historyTracks.clear()
-            historyAdapter.tracks = viewModel.getHistory()
-            historyAdapter.notifyDataSetChanged()
+            trackAdapter.tracks.clear()
             binding.bClearHistoryBtn.visibility = View.GONE
             binding.tvSearched.visibility = View.GONE
         }
@@ -88,58 +83,46 @@ class SearchActivity : AppCompatActivity() {
                 binding.placeholder.visibility = View.GONE
                 binding.clearIcon.visibility = clearButtonVisibility(s)
                 viewModel.searchDebounce(changedText = s?.toString() ?: "")
-                if (binding.inputEditText.hasFocus() && binding.inputEditText.text.isNotEmpty()) {
-                    trackAdapter.tracks.clear()
-                    binding.rvRecycleView.adapter = trackAdapter
-                    binding.placeholder.visibility = View.GONE
-                    binding.bClearHistoryBtn.visibility = View.GONE
-                    binding.tvSearched.visibility = View.GONE
-
-
-                }else if (binding.inputEditText.hasFocus() && binding.inputEditText.text.isEmpty() && viewModel.getHistory().isEmpty()) {
-                    showContent(trackList)
-                }else if (binding.inputEditText.hasFocus() && binding.inputEditText.text.isNotEmpty()) {
-                    showContent(trackList)
-                }else {
-                    showHistory()
+                if (s?.isNotEmpty() == true) {
+                    clearAdapter()
+                } else if (s?.isEmpty() == true) {
+                    viewModel.setHistoryFlag(true)
                 }
             }
 
-            override fun afterTextChanged(s: Editable?) {}
+            override fun afterTextChanged(s: Editable?) {
+
+            }
         }
         textWatcher?.let { binding.inputEditText.addTextChangedListener(it) }
 
-        trackList = arrayListOf()
-        trackAdapter = TrackAdapter(trackList, object : TrackAdapter.OnClickListenerItem {
-            override fun onItemClick(track: Track) {
-                if (clickDebounce()) {
-                    viewModel.addToHistory(track)
-                    val playerIntent = Intent(this@SearchActivity, AudioPlayerActivity::class.java)
-                    playerIntent.putExtra(CLICKED_ITEM, track)
-                    startActivity(playerIntent)
-                }
-            }
-
-        })
         binding.inputEditText.setOnFocusChangeListener { view, hasFocus ->
-            if (hasFocus && binding.inputEditText.text.isEmpty() && viewModel.getHistory()
-                    .isNotEmpty()
-            ) {
-                showHistory()                               // Кейс когда история поиска не пуста
 
-            }else {
-                showContent(trackList)                      // Кейс когда история пуста
+            when {
+                !hasFocus && binding.inputEditText.text.isEmpty() -> clearAdapter()
+                hasFocus && binding.inputEditText.text.isEmpty() && viewModel.getHistory()
+                    .isNotEmpty() -> viewModel.setHistoryFlag(true)
+
+                hasFocus && binding.inputEditText.text.isNotEmpty() -> viewModel.setHistoryFlag(
+                    false
+                )
+
+                !hasFocus && binding.inputEditText.text.isNotEmpty() -> viewModel.setHistoryFlag(
+                    false
+                )
+
+                hasFocus && binding.inputEditText.text.isEmpty() && viewModel.getHistory()
+                    .isNotEmpty() -> clearAdapter()
 
             }
         }
-
         viewModel.observeState().observe(this) {
             render(it)
         }
-        viewModel.trackListLiveData.observe(this){trackListLive ->
-            trackList = ArrayList(trackListLive)
+        viewModel.trackListLiveData.observe(this) { trackListLive ->
+            trackAdapter.tracks = ArrayList(trackListLive)
+            trackAdapter.notifyDataSetChanged()
         }
-
     }
 
     override fun onDestroy() {
@@ -164,8 +147,8 @@ class SearchActivity : AppCompatActivity() {
 
     private fun init() {
 
-        historyTracks = viewModel.getHistory()
-        historyAdapter = TrackAdapter(historyTracks, object : TrackAdapter.OnClickListenerItem {
+        trackAdapter = TrackAdapter(object : TrackAdapter.OnClickListenerItem {
+
             override fun onItemClick(track: Track) {
                 if (clickDebounce()) {
                     viewModel.addToHistory(track)
@@ -175,6 +158,11 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         })
+        if (viewModel.trackListLiveData.value != null) {
+            trackAdapter.tracks = ArrayList(viewModel.trackListLiveData.value!!)
+        }
+        binding.rvRecycleView.adapter = trackAdapter
+
     }
 
     private fun clickDebounce(): Boolean {
@@ -191,6 +179,7 @@ class SearchActivity : AppCompatActivity() {
         binding.placeholder.visibility = View.GONE
         binding.rvRecycleView.visibility = View.GONE
         binding.tvSearched.visibility = View.GONE
+        binding.bClearHistoryBtn.visibility = View.GONE
     }
 
     private fun showError(errorMessage: String, errorMessageExtra: String) {
@@ -222,20 +211,39 @@ class SearchActivity : AppCompatActivity() {
         binding.tvPlaceholderMessage.text = emptyMessage
     }
 
-    fun showContent(trackList: List<Track>) {
+    private fun showContent(trackList: List<Track>, isHistoryFlag: Boolean) {
 
         binding.placeholder.visibility = View.GONE
         binding.bPlaceholderUpdateBtn.visibility = View.GONE
         binding.ivPlaceholderImage.visibility = View.GONE
         binding.tvPlaceholderMessage.visibility = View.GONE
         binding.tvPlaceholderMessageExtra.visibility = View.GONE
-        binding.rvRecycleView.visibility = View.VISIBLE
         binding.progressBar.visibility = View.GONE
+        binding.rvRecycleView.visibility = View.VISIBLE
 
         trackAdapter.tracks.clear()
         trackAdapter.tracks.addAll(trackList)
         trackAdapter.notifyDataSetChanged()
-        binding.rvRecycleView.adapter = trackAdapter
+
+
+        if (isHistoryFlag) {
+
+            binding.bClearHistoryBtn.visibility = View.VISIBLE
+            binding.tvSearched.visibility = View.VISIBLE
+
+        } else {
+
+            binding.bClearHistoryBtn.visibility = View.GONE
+            binding.tvSearched.visibility = View.GONE
+
+        }
+    }
+
+    private fun clearAdapter() {
+        binding.bClearHistoryBtn.visibility = View.GONE
+        binding.tvSearched.visibility = View.GONE
+        trackAdapter.tracks.clear()
+        trackAdapter.notifyDataSetChanged()
     }
 
     private fun render(state: SearchState) {
@@ -243,22 +251,9 @@ class SearchActivity : AppCompatActivity() {
             is SearchState.Loading -> showLoading()
             is SearchState.Error -> showError(state.errorMessage, state.errorMessageExtra)
             is SearchState.Empty -> showEmpty(state.message)
-            is SearchState.Content -> showContent(state.tracks)
+            is SearchState.Content -> showContent(state.tracks, state.isHistory)
+            is SearchState.History -> showContent(state.history, state.isHistory)
         }
-    }
-    private fun showHistory(){
-        binding.placeholder.visibility = View.GONE
-        binding.bPlaceholderUpdateBtn.visibility = View.GONE
-        binding.ivPlaceholderImage.visibility = View.GONE
-        binding.tvPlaceholderMessage.visibility = View.GONE
-        binding.tvPlaceholderMessageExtra.visibility = View.GONE
-
-        historyAdapter.tracks = viewModel.getHistory()
-        binding.rvRecycleView.adapter = historyAdapter
-        historyAdapter.notifyDataSetChanged()
-        binding.rvRecycleView.visibility = View.VISIBLE
-        binding.bClearHistoryBtn.visibility = View.VISIBLE
-        binding.tvSearched.visibility = View.VISIBLE
     }
 
 }

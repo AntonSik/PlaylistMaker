@@ -43,7 +43,7 @@ class SettingsActivity : AppCompatActivity() {
         binding.share.setOnClickListener {
 
             val shareIntent = Intent(Intent.ACTION_SEND_MULTIPLE)
-            shareIntent.putExtra(Intent.EXTRA_TEXT,viewModel.shareApp())
+            shareIntent.putExtra(Intent.EXTRA_TEXT, viewModel.shareApp())
             shareIntent.setType("*/*")
             startActivity(shareIntent)
         }

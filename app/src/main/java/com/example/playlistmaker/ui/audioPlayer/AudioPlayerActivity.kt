@@ -20,7 +20,7 @@ import java.util.Locale
 
 class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAudioPlayerBinding
-    private lateinit var viewModel : AudioPlayerViewModel
+    private lateinit var viewModel: AudioPlayerViewModel
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +41,10 @@ class AudioPlayerActivity : AppCompatActivity() {
                 is PlayerScreenState.Content -> {
                     changeContentVisibility(loading = false)
 
-                    val url = screenState.PlayerModel.artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg")
+                    val url = screenState.playerModel.artworkUrl100?.replaceAfterLast(
+                        '/',
+                        "512x512bb.jpg"
+                    )
                     Glide.with(this)
                         .load(url)
                         .placeholder(R.drawable.placeholder)
@@ -49,33 +52,35 @@ class AudioPlayerActivity : AppCompatActivity() {
                         .transform(RoundedCorners(dpToPx(8f, this)))
                         .into(binding.ivCover)
 
-                    binding.tvTrackName.text = screenState.PlayerModel.trackName
-                    binding.tvArtists.text = screenState.PlayerModel.artistName
-                    binding.tvEnterDuration.text = dateFormat.format(screenState.PlayerModel.trackTimeMillis)
+                    binding.tvTrackName.text = screenState.playerModel.trackName
+                    binding.tvArtists.text = screenState.playerModel.artistName
+                    binding.tvEnterDuration.text =
+                        dateFormat.format(screenState.playerModel.trackTimeMillis)
 
-                    if (screenState.PlayerModel.collectionName.isNullOrEmpty()) {
+                    if (screenState.playerModel.collectionName.isNullOrEmpty()) {
                         binding.tvEnterAlbum.visibility = View.GONE
                         binding.tvAlbum.visibility = View.GONE
                     } else {
-                        binding.tvEnterAlbum.text = screenState.PlayerModel.collectionName
+                        binding.tvEnterAlbum.text = screenState.playerModel.collectionName
                         binding.tvEnterAlbum.visibility = View.VISIBLE
                         binding.tvAlbum.visibility = View.VISIBLE
                     }
 
-                    if (screenState.PlayerModel.releaseDate.isNullOrEmpty()) {
+                    if (screenState.playerModel.releaseDate.isNullOrEmpty()) {
                         binding.tvEnterYear.visibility = View.GONE
                         binding.tvYear.visibility = View.GONE
                     } else {
-                        if (screenState.PlayerModel.releaseDate.length > 4) {
-                            binding.tvEnterYear.text = screenState.PlayerModel.releaseDate.substring(0, 4)
-                        }else {
-                            binding.tvEnterYear.text = screenState.PlayerModel.releaseDate
+                        if (screenState.playerModel.releaseDate.length > 4) {
+                            binding.tvEnterYear.text =
+                                screenState.playerModel.releaseDate.substring(0, 4)
+                        } else {
+                            binding.tvEnterYear.text = screenState.playerModel.releaseDate
                         }
                         binding.tvEnterYear.visibility = View.VISIBLE
                         binding.tvYear.visibility = View.VISIBLE
                     }
-                    binding.tvEnterGenre.text = screenState.PlayerModel.primaryGenreName
-                    binding.tvEnterCountry.text = screenState.PlayerModel.country
+                    binding.tvEnterGenre.text = screenState.playerModel.primaryGenreName
+                    binding.tvEnterCountry.text = screenState.playerModel.country
                 }
 
                 is PlayerScreenState.Loading -> {
@@ -96,7 +101,7 @@ class AudioPlayerActivity : AppCompatActivity() {
             if (status.isCompleted)
                 binding.tvTimePlaying.text = getString(R.string.zero)
         }
-        viewModel.timerLive.observe(this){ timer ->
+        viewModel.timerLive.observe(this) { timer ->
             binding.tvTimePlaying.text = timer
         }
         binding.btnPlay.setOnClickListener {
@@ -140,6 +145,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding.tvEnterCountry.isVisible = !loading
         binding.tvTimePlaying.isVisible = !loading
     }
+
     private fun dpToPx(dp: Float, context: Context): Int {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
