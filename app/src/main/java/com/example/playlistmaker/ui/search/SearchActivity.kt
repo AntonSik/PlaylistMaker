@@ -22,7 +22,6 @@ import com.example.playlistmaker.ui.search.models.SearchState
 class SearchActivity : AppCompatActivity() {
 
     companion object {
-        private const val INPUT_TEXT = "INPUT_EDIT"
         const val CLICKED_ITEM = "clicked track"
         private const val CLICK_DEBOUNCE_DELAY = 2000L
 
@@ -52,7 +51,6 @@ class SearchActivity : AppCompatActivity() {
             SearchTracksViewModel.getViewModelFactory()
         )[SearchTracksViewModel::class.java]
 
-        savedText = savedInstanceState?.getString(INPUT_TEXT)
         init()
 
         binding.arrow2.setOnClickListener {
@@ -96,11 +94,11 @@ class SearchActivity : AppCompatActivity() {
                     binding.tvSearched.visibility = View.GONE
 
 
-                }else if (binding.inputEditText.hasFocus() && binding.inputEditText.text.isEmpty() && viewModel.getHistory().isEmpty()) {
+                } else if (binding.inputEditText.hasFocus() && binding.inputEditText.text.isEmpty() && viewModel.getHistory()
+                        .isEmpty()
+                ) {
                     showContent(trackList)
-                }else if (binding.inputEditText.hasFocus() && binding.inputEditText.text.isNotEmpty()) {
-                    showContent(trackList)
-                }else {
+                } else {
                     showHistory()
                 }
             }
@@ -127,7 +125,7 @@ class SearchActivity : AppCompatActivity() {
             ) {
                 showHistory()                               // Кейс когда история поиска не пуста
 
-            }else {
+            } else {
                 showContent(trackList)                      // Кейс когда история пуста
 
             }
@@ -136,8 +134,11 @@ class SearchActivity : AppCompatActivity() {
         viewModel.observeState().observe(this) {
             render(it)
         }
-        viewModel.trackListLiveData.observe(this){trackListLive ->
+        viewModel.trackListLiveData.observe(this) { trackListLive ->
             trackList = ArrayList(trackListLive)
+            binding.placeholder.visibility = View.GONE
+            binding.bClearHistoryBtn.visibility = View.GONE
+            binding.tvSearched.visibility = View.GONE
         }
 
     }
@@ -231,6 +232,8 @@ class SearchActivity : AppCompatActivity() {
         binding.tvPlaceholderMessageExtra.visibility = View.GONE
         binding.rvRecycleView.visibility = View.VISIBLE
         binding.progressBar.visibility = View.GONE
+        binding.bClearHistoryBtn.visibility = View.GONE
+        binding.tvSearched.visibility = View.GONE
 
         trackAdapter.tracks.clear()
         trackAdapter.tracks.addAll(trackList)
@@ -246,7 +249,8 @@ class SearchActivity : AppCompatActivity() {
             is SearchState.Content -> showContent(state.tracks)
         }
     }
-    private fun showHistory(){
+
+    private fun showHistory() {
         binding.placeholder.visibility = View.GONE
         binding.bPlaceholderUpdateBtn.visibility = View.GONE
         binding.ivPlaceholderImage.visibility = View.GONE

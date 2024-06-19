@@ -8,9 +8,9 @@ import com.example.playlistmaker.utils.App.Companion.SHARED_PREFERENCES
 class SettingsRepositoryImpl(
 
     val context: Context
-):SettingsRepository {
+) : SettingsRepository {
     override fun getThemeStorage(): ThemeStorage {
-      return ThemeStorage(context.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE))
+        return ThemeStorage(context.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE))
     }
 
     override fun getTheme(themeStorage: ThemeStorage): Boolean {

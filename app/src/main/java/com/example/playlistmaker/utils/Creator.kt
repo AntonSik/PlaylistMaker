@@ -26,10 +26,13 @@ object Creator {
             RetrofitNetworkClient(context),
             LocalStorage(context.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE)),
         )
-    } private fun getPlayerRepository(): PlayerRepository{
+    }
+
+    private fun getPlayerRepository(): PlayerRepository {
         return PlayerRepositoryImpl()
     }
-    fun providePlayerInteractor(): PlayerInteractor{
+
+    fun providePlayerInteractor(): PlayerInteractor {
         return PlayerInteractorImpl(getPlayerRepository())
     }
 

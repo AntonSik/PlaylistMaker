@@ -10,7 +10,7 @@ import com.example.playlistmaker.utils.Resource
 
 class SearchTracksRepositoryImpl(
     private val networkClient: NetworkClient,
-    val localStorage: LocalStorage
+    private val localStorage: LocalStorage
 ) : SearchTracksRepository {
     override fun searchTracks(expression: String): Resource<List<Track>> {
         val response = networkClient.doRequest(SearchTrackRequest(expression))
@@ -42,12 +42,13 @@ class SearchTracksRepositoryImpl(
             }
         }
     }
-   override fun addTrack(track: Track) {
-       localStorage.addTrack(track)
+
+    override fun addTrack(track: Track) {
+        localStorage.addTrack(track)
     }
 
     override fun getHistoryList(): ArrayList<Track> {
-       return localStorage.getHistoryList()
+        return localStorage.getHistoryList()
     }
 
     override fun clearHistory() {

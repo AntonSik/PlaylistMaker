@@ -8,7 +8,7 @@ interface SearchTrackInteracktor {
     fun getHistoryList(): ArrayList<Track>
     fun clearHistory()
 
-    interface TracksConsumer{
+    interface TracksConsumer {
         fun consume(foundTracks: List<Track>?, errorMessage: String?)
     }
 }

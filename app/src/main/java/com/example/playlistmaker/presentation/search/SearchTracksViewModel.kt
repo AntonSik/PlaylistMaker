@@ -79,7 +79,9 @@ class SearchTracksViewModel(application: Application) : AndroidViewModel(applica
                                 renderState(
                                     SearchState.Error(
                                         errorMessage = getApplication<Application>().getString(R.string.no_internet_connection),
-                                        errorMessageExtra = getApplication<Application>().getString(R.string.no_internet_connection_extra)
+                                        errorMessageExtra = getApplication<Application>().getString(
+                                            R.string.no_internet_connection_extra
+                                        )
                                     )
 
                                 )
@@ -109,7 +111,8 @@ class SearchTracksViewModel(application: Application) : AndroidViewModel(applica
 
         }
     }
-    fun resetLastSearchedText(){
+
+    fun resetLastSearchedText() {
         lastSearchText = null
     }
 
@@ -118,7 +121,7 @@ class SearchTracksViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun getHistory(): ArrayList<Track> {
-       return searchInteractor.getHistoryList()
+        return searchInteractor.getHistoryList()
     }
 
     fun clearHistory() {

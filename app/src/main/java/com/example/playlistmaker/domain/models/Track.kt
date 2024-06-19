@@ -16,7 +16,7 @@ data class Track(
     val releaseDate: String,
     val country: String,
     val previewUrl: String,
-): Parcelable {
+) : Parcelable {
     override fun describeContents(): Int {
         return 0
     }
@@ -48,7 +48,7 @@ data class Track(
                 country = source.readString() ?: "",
                 previewUrl = source.readString() ?: "",
 
-            )
+                )
         }
 
         override fun newArray(size: Int): Array<Track?> {
