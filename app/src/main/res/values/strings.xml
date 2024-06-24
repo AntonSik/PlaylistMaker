@@ -34,5 +34,7 @@
     <string name="content_description_clear_btn">кнопка очистки поиска</string>
     <string name="content_description_bad_request">изображение некорректного запроса поиска</string>
     <string name="zero">00:00</string>
+    <string name="check_internet_connection">Проверьте подключение к интернету</string>
+    <string name="server_error">Ошибка сервера</string>
 
 </resources>

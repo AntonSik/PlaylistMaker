@@ -1,11 +1,10 @@
-package com.example.playlistmaker.domain.models
-
+package com.example.playlistmaker.data.dto
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.example.playlistmaker.domain.models.Track
 
-
-data class Track(
+data class TrackDto(
     val trackId: Int,
     val trackName: String,
     val artistName: String,
@@ -47,8 +46,7 @@ data class Track(
                 releaseDate = source.readString() ?: "",
                 country = source.readString() ?: "",
                 previewUrl = source.readString() ?: "",
-
-                )
+            )
         }
 
         override fun newArray(size: Int): Array<Track?> {

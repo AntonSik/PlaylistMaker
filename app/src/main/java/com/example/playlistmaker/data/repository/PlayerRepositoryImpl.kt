@@ -53,8 +53,4 @@ class PlayerRepositoryImpl : PlayerRepository {
         mediaPlayer.release()
         audioPlayerListener?.invoke(AudioPlayerState.DELETED)
     }
-
-    override fun setOnChangePlayerListener(listener: (AudioPlayerState) -> Unit) {
-        audioPlayerListener = listener
-    }
 }
