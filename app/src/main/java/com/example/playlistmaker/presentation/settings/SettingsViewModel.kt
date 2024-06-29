@@ -2,30 +2,18 @@ package com.example.playlistmaker.presentation.settings
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.api.SharingInteractor
 import com.example.playlistmaker.domain.models.EmailData
+import com.example.playlistmaker.domain.repository.SettingsRepository
 import com.example.playlistmaker.utils.App
-import com.example.playlistmaker.utils.Creator
 
 class SettingsViewModel(
-    application: Application
-) : AndroidViewModel(application) {
-    companion object {
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SettingsViewModel(this[APPLICATION_KEY] as Application)
-            }
-        }
-    }
+    application: Application,
+    private val sharingInteractor: SharingInteractor,
+    private val settingsRepository: SettingsRepository,
 
-    private val sharingInteractor: SharingInteractor =
-        Creator.provideSharingInteractor(getApplication())
-    private val settingsRepository = Creator.provideSettingsRepository(getApplication())
+    ) : AndroidViewModel(application) {
 
 
     fun getTheme(): Boolean {
@@ -42,12 +30,11 @@ class SettingsViewModel(
     }
 
     fun writeToSupport(): EmailData {
-        val supportIntent = sharingInteractor.writeToSupport(
+        return sharingInteractor.writeToSupport(
             recipientId = R.string.myEmail,
             subjectId = R.string.themeofMessage,
             textId = R.string.message
         )
-        return supportIntent
     }
 
     fun openTerms(): String {

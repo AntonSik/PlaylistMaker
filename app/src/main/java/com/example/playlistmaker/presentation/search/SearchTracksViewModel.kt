@@ -8,29 +8,21 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.api.SearchTrackInteracktor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.search.models.SearchState
-import com.example.playlistmaker.utils.Creator
 
-class SearchTracksViewModel(application: Application) : AndroidViewModel(application) {
+class SearchTracksViewModel(
+    application: Application,
+    private val searchInteractor: SearchTrackInteracktor
+) : AndroidViewModel(application) {
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
 
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SearchTracksViewModel(this[APPLICATION_KEY] as Application)
-            }
-        }
     }
 
-    private val searchInteractor = Creator.provideSearchTracksInteractor(getApplication())
     private val handler = Handler(Looper.getMainLooper())
     private var lastSearchText: String? = null
 
@@ -156,11 +148,7 @@ class SearchTracksViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun setHistoryFlag(isHistory: Boolean) {
-        when (isHistory) {
+        if (isHistory) getHistoryState() else getContentState()
 
-            true -> getHistoryState()
-
-            false -> getContentState()
-        }
     }
 }

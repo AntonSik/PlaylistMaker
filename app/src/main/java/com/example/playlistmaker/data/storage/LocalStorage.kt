@@ -5,7 +5,9 @@ import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class LocalStorage(private val sharedPrefs: SharedPreferences) {
+class LocalStorage(
+    private val sharedPrefs: SharedPreferences,
+    private val gson: Gson) {
     private companion object {
         private const val KEY_FOR_TRACK_LIST = "New List's key"
         private const val MAX_HISTORY_SIZE = 10
@@ -13,7 +15,7 @@ class LocalStorage(private val sharedPrefs: SharedPreferences) {
 
     private fun saveList(historyTrackList: ArrayList<Track>) {    // Метод сохранения листа в sharedPreferences
 
-        val trackListJson = Gson().toJson(historyTrackList)
+        val trackListJson = gson.toJson(historyTrackList)
 
         sharedPrefs.edit()
             .putString(KEY_FOR_TRACK_LIST, trackListJson)
@@ -25,7 +27,7 @@ class LocalStorage(private val sharedPrefs: SharedPreferences) {
         val typeList = object : TypeToken<ArrayList<Track>>() {}.type
         val savedTrackListJson = sharedPrefs.getString(KEY_FOR_TRACK_LIST, null)
         if (savedTrackListJson != null) {
-            return Gson().fromJson(savedTrackListJson, typeList)
+            return gson.fromJson(savedTrackListJson, typeList)
 
         }
         return arrayListOf()

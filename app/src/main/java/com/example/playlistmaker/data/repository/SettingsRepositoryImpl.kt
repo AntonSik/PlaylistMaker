@@ -1,14 +1,14 @@
 package com.example.playlistmaker.data.repository
 
-import android.content.Context
 import android.content.SharedPreferences
 import com.example.playlistmaker.domain.repository.SettingsRepository
 import com.example.playlistmaker.utils.App
 
 
 class SettingsRepositoryImpl(
+
     private val sharedPrefs: SharedPreferences,
-    val context: Context
+
 ) : SettingsRepository {
 
     override fun getTheme(): Boolean {

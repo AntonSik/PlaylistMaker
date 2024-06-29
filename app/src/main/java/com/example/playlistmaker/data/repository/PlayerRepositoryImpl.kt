@@ -5,11 +5,11 @@ import android.media.MediaPlayer
 import com.example.playlistmaker.domain.models.AudioPlayerState
 import com.example.playlistmaker.domain.repository.PlayerRepository
 
-class PlayerRepositoryImpl : PlayerRepository {
+class PlayerRepositoryImpl (private val mediaPlayer: MediaPlayer): PlayerRepository {
 
     private var completionCallback: (() -> Unit)? = null
     private var audioPlayerListener: ((AudioPlayerState) -> Unit)? = null
-    private val mediaPlayer = MediaPlayer()
+
 
 
     override fun startPlayer() {

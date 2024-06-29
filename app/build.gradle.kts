@@ -54,6 +54,7 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.github.moxy-community:moxy:$moxyVersion")
     implementation("com.github.moxy-community:moxy-android:$moxyVersion")
+    implementation("io.insert-koin:koin-android:3.3.3")
     kapt("com.github.moxy-community:moxy-compiler:$moxyVersion")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

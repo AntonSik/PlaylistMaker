@@ -12,9 +12,9 @@ import com.example.playlistmaker.domain.repository.SearchTracksRepository
 import com.example.playlistmaker.utils.Resource
 
 class SearchTracksRepositoryImpl(
+    private val context: Context,
     private val networkClient: NetworkClient,
     private val localStorage: LocalStorage,
-    private val context: Context
 ) : SearchTracksRepository {
     override fun searchTracks(expression: String): Resource<List<Track>> {
         val response = networkClient.doRequest(SearchTrackRequest(expression))

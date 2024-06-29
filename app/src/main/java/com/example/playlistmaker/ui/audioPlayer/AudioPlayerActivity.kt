@@ -6,7 +6,6 @@ import android.util.TypedValue
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
@@ -15,26 +14,24 @@ import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.audioPlayer.AudioPlayerViewModel
 import com.example.playlistmaker.ui.audioPlayer.models.PlayerScreenState
 import com.example.playlistmaker.ui.search.SearchActivity
+import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.core.parameter.parametersOf
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class AudioPlayerActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityAudioPlayerBinding
     private lateinit var viewModel: AudioPlayerViewModel
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val selectedTrack = intent.getParcelableExtra<Track>(SearchActivity.CLICKED_ITEM)!!
+        viewModel = getViewModel { parametersOf(selectedTrack) }
 
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        val selectedTrack = intent.getParcelableExtra<Track>(SearchActivity.CLICKED_ITEM)
-
-        viewModel = ViewModelProvider(
-            this,
-            AudioPlayerViewModel.getViewModelFactory(selectedTrack)
-        )[AudioPlayerViewModel::class.java]
 
         viewModel.screenStateLive.observe(this) { screenState ->
             when (screenState) {
@@ -109,6 +106,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
         binding.ibArrowBack.setOnClickListener { finish() }
     }
+
 
     override fun onPause() {
         super.onPause()
