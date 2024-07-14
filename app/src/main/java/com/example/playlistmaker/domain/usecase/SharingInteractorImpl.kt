@@ -4,19 +4,16 @@ import com.example.playlistmaker.domain.api.SharingInteractor
 import com.example.playlistmaker.domain.models.EmailData
 import com.example.playlistmaker.domain.repository.SharingResourceRepository
 
-class SharingInteractorImpl(
-    private val stringsRepository: SharingResourceRepository,
-
-    ) : SharingInteractor {
+class SharingInteractorImpl(private val repository: SharingResourceRepository) : SharingInteractor {
     override fun getUrl(appLinkId: Int): String {
-        return stringsRepository.getString(appLinkId)
+        return repository.getString(appLinkId)
     }
 
     override fun writeToSupport(recipientId: Int, subjectId: Int, textId: Int): EmailData {
         return EmailData(
-            recipient = stringsRepository.getString(recipientId),
-            subject = stringsRepository.getString(subjectId),
-            text = stringsRepository.getString(textId)
+            recipient = repository.getString(recipientId),
+            subject = repository.getString(subjectId),
+            text = repository.getString(textId)
         )
     }
 }

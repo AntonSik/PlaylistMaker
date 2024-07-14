@@ -5,7 +5,7 @@ import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.PlayerRepository
 import com.example.playlistmaker.domain.models.PlayerModel
 
-class PlayerInteractorImpl(val repository: PlayerRepository) : PlayerInteractor {
+class PlayerInteractorImpl(private val repository: PlayerRepository) : PlayerInteractor {
     override fun loadTrackData(track: Track?, onComplete: (PlayerModel) -> Unit) {
         track?.let {
             val playerModel = PlayerModel(

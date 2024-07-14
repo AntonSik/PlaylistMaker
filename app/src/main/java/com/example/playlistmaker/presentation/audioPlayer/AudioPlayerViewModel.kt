@@ -6,32 +6,22 @@ import android.os.Looper
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.playlistmaker.domain.api.PlayerInteractor
 import com.example.playlistmaker.domain.models.AudioPlayerState
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.audioPlayer.models.PlayerScreenState
-import com.example.playlistmaker.utils.Creator
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class AudioPlayerViewModel(val track: Track?, application: Application) :
-    AndroidViewModel(application) {
+class AudioPlayerViewModel(
+    application: Application,
+    private val track: Track?,
+    private val playerInteractor: PlayerInteractor
+) : AndroidViewModel(application) {
     companion object {
-        fun getViewModelFactory(track: Track?): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                AudioPlayerViewModel(
-                    track,
-                    this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application
-                )
-            }
-        }
-
         private const val UPDATING_DELAY = 400L
     }
 
-    private val playerInteractor = Creator.providePlayerInteractor()
     private val recordsUrl = track?.previewUrl
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
     private val handler = Handler(Looper.getMainLooper())
