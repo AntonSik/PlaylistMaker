@@ -17,12 +17,12 @@ sealed interface SearchState {
     ) : SearchState
 
     data class Error(
-        val errorMessage: String,
-        val errorMessageExtra: String
+        val errorMessage: Int,
+        val errorMessageExtra: Int
     ) : SearchState
 
     data class Empty(
-        val message: String
+        val message: Int
     ) : SearchState
 
 }

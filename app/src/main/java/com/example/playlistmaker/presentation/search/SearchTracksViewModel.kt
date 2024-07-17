@@ -1,26 +1,23 @@
 package com.example.playlistmaker.presentation.search
 
-import android.app.Application
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.api.SearchTrackInteracktor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.search.models.SearchState
 
 class SearchTracksViewModel(
-    application: Application,
+
     private val searchInteractor: SearchTrackInteracktor
-) : AndroidViewModel(application) {
+) : ViewModel() {
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
-
     }
 
     private val handler = Handler(Looper.getMainLooper())
@@ -56,7 +53,7 @@ class SearchTracksViewModel(
     private fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
             renderState(SearchState.Loading)
-            Log.d("viewModel", "LOADING_VALUE${stateLiveData.value}")
+
 
             searchInteractor.searchTracks(
                 newSearchText,
@@ -72,10 +69,8 @@ class SearchTracksViewModel(
                             errorMessage != null -> {
                                 renderState(
                                     SearchState.Error(
-                                        errorMessage = getApplication<Application>().getString(R.string.no_internet_connection),
-                                        errorMessageExtra = getApplication<Application>().getString(
-                                            R.string.no_internet_connection_extra
-                                        )
+                                        errorMessage = R.string.no_internet_connection,
+                                        errorMessageExtra = R.string.no_internet_connection_extra
                                     )
                                 )
                             }
@@ -83,7 +78,7 @@ class SearchTracksViewModel(
                             trackList.isEmpty() -> {
                                 renderState(
                                     SearchState.Empty(
-                                        message = getApplication<Application>().getString(R.string.not_found)
+                                        message = R.string.not_found
                                     )
                                 )
                             }

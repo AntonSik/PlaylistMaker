@@ -9,6 +9,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySearchBinding
@@ -24,7 +25,6 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         const val CLICKED_ITEM = "clicked track"
         private const val CLICK_DEBOUNCE_DELAY = 2000L
-
     }
 
     private lateinit var binding: ActivitySearchBinding
@@ -35,8 +35,6 @@ class SearchActivity : AppCompatActivity() {
     private val viewModel by viewModel<SearchTracksViewModel>()
 
     private lateinit var trackAdapter: TrackAdapter
-
-
     private var textWatcher: TextWatcher? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,7 +89,7 @@ class SearchActivity : AppCompatActivity() {
         }
         textWatcher?.let { binding.inputEditText.addTextChangedListener(it) }
 
-        binding.inputEditText.setOnFocusChangeListener { view, hasFocus ->
+        binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
 
             when {
                 !hasFocus && binding.inputEditText.text.isEmpty() -> clearAdapter()
@@ -177,7 +175,7 @@ class SearchActivity : AppCompatActivity() {
         binding.bClearHistoryBtn.visibility = View.GONE
     }
 
-    private fun showError(errorMessage: String, errorMessageExtra: String) {
+    private fun showError(@StringRes errorMessage: Int, @StringRes errorMessageExtra: Int) {
         binding.progressBar.visibility = View.GONE
         binding.rvRecycleView.visibility = View.GONE
         binding.tvSearched.visibility = View.GONE
@@ -187,12 +185,12 @@ class SearchActivity : AppCompatActivity() {
         binding.bPlaceholderUpdateBtn.visibility = View.VISIBLE
         binding.tvPlaceholderMessageExtra.visibility = View.VISIBLE
         binding.ivPlaceholderImage.setImageResource(R.drawable.light_mode_no_connection)
-        binding.tvPlaceholderMessage.text = errorMessage
-        binding.tvPlaceholderMessageExtra.text = errorMessageExtra
+        binding.tvPlaceholderMessage.text = getString(errorMessage)
+        binding.tvPlaceholderMessageExtra.text = getString(errorMessageExtra)
 
     }
 
-    private fun showEmpty(emptyMessage: String) {
+    private fun showEmpty(@StringRes emptyMessage: Int) {
         binding.progressBar.visibility = View.GONE
         binding.rvRecycleView.visibility = View.GONE
         binding.tvSearched.visibility = View.GONE
@@ -203,7 +201,7 @@ class SearchActivity : AppCompatActivity() {
         binding.ivPlaceholderImage.visibility = View.VISIBLE
         binding.tvPlaceholderMessage.visibility = View.VISIBLE
         binding.ivPlaceholderImage.setImageResource(R.drawable.light_mode_error)
-        binding.tvPlaceholderMessage.text = emptyMessage
+        binding.tvPlaceholderMessage.text = getString(emptyMessage)
     }
 
     private fun showContent(trackList: List<Track>, isHistoryFlag: Boolean) {
