@@ -21,14 +21,10 @@
         android:contentDescription="@string/content_description_arrow_back" />
 
     <TextView
+        style="@style/header_style"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/colorSecondary"
-        android:fontFamily="@font/ys_display_medium"
-        android:paddingTop="9dp"
-        android:text="@string/media"
-        android:textColor="?attr/colorOnSecondary"
-        android:textSize="@dimen/titel_size" />
+        android:text="@string/media" />
 </LinearLayout>
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"

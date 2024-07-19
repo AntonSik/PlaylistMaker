@@ -17,7 +17,6 @@
         android:id="@+id/tv_placeholderMessage"
         style="@style/placeholder_message"
         android:layout_marginTop="16dp"
-        android:text="@string/empty_favorite_tracks_placeholder_message"
-        android:textSize="@dimen/fragment_placeholder_text_size" />
+        android:text="@string/empty_favorite_tracks_placeholder_message" />
 
 </LinearLayout>

@@ -19,9 +19,9 @@ class MediaActivity : AppCompatActivity() {
         binding.viewPager.adapter = MediaViewPagerAdapter(supportFragmentManager, lifecycle)
 
         tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            when (position) {
-                0 -> tab.text = getString(R.string.favorits_tracks)
-                else -> tab.text = getString(R.string.playlists)
+           tab.text = when (position) {
+                0 -> getString(R.string.favorits_tracks)
+                else -> getString(R.string.playlists)
             }
         }
         tabMediator.attach()

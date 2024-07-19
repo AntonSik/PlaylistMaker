@@ -117,7 +117,15 @@
         <item name="android:textColor">?attr/colorOnSecondary</item>
         <item name="android:textAlignment">center</item>
         <item name="android:lineHeight">22dp</item>
+        <item name="android:textSize">@dimen/fragment_placeholder_text_size</item>
 
+    </style>
+    <style name="header_style">
+        <item name="android:fontFamily">font/ys_display_medium</item>
+        <item name="android:textSize">@dimen/titel_size</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="android:background">?attr/colorSecondary</item>
+        <item name="android:paddingTop">5dp</item>
     </style>
 
 </resources>
