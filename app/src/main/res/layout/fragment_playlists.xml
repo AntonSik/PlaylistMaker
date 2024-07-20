@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/placeholder"
+    style="@style/placeholder"
+    android:visibility="visible"
+    tools:context=".ui.media.PlaylistsFragment">
+
+    <Button
+        android:id="@+id/b_new_playlist_btn"
+        style="@style/clear_history_and_new_playlist_btn"
+        android:layout_height="36dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/new_playlist_btn"
+        android:theme="@style/Update_btn_theme"
+        android:visibility="visible"
+        app:cornerRadius="@dimen/button_search_activity_corners" />
+
+    <ImageView
+        android:id="@+id/iv_placeholderImage"
+        style="@style/placeholder_image"
+        android:layout_marginTop="46dp"
+        android:contentDescription="@string/content_description_bad_request"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_placeholderMessage"
+        style="@style/placeholder_message"
+        android:layout_marginTop="16dp"
+        android:text="@string/empty_playlists_placeholder_message" />
+
+</LinearLayout>

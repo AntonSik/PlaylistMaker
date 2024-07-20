@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/placeholder"
+    style="@style/placeholder"
+    android:visibility="visible"
+    tools:context=".ui.media.FavoriteTracksFragment">
+
+    <ImageView
+        android:id="@+id/iv_placeholderImage"
+        style="@style/placeholder_image"
+        android:layout_marginTop="@dimen/fragment_placeholder_marginTop"
+        android:contentDescription="@string/content_description_bad_request"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_placeholderMessage"
+        style="@style/placeholder_message"
+        android:layout_marginTop="16dp"
+        android:text="@string/empty_favorite_tracks_placeholder_message" />
+
+</LinearLayout>
