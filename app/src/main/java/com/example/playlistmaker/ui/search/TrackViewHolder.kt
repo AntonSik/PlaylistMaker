@@ -16,7 +16,7 @@ import java.util.Locale
 
 class TrackViewHolder(
     private val binding: ItemTrackBinding,
-    private val listenerItem: TrackAdapter.OnClickListenerItem
+
 ) : RecyclerView.ViewHolder(binding.root) {
     private val ivPrint = itemView.findViewById<ImageView>(R.id.iv_print)
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
@@ -32,10 +32,6 @@ class TrackViewHolder(
         binding.tvTrack.text = item.trackName
         binding.tvAuthor.text = item.artistName
         binding.tvTiming.text = dateFormat.format(item.trackTimeMillis)
-
-        itemView.setOnClickListener {
-            listenerItem.onItemClick(item)
-        }
 
     }
 

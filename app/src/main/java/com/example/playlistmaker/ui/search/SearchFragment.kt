@@ -1,33 +1,31 @@
 package com.example.playlistmaker.ui.search
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
-import android.view.inputmethod.InputMethodManager
+import android.view.ViewGroup
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.search.SearchTracksViewModel
 import com.example.playlistmaker.ui.audioPlayer.AudioPlayerActivity
 import com.example.playlistmaker.ui.search.models.SearchState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-
-class SearchActivity : AppCompatActivity() {
-
+class SearchFragment : Fragment() {
     companion object {
         const val CLICKED_ITEM = "clicked track"
         private const val CLICK_DEBOUNCE_DELAY = 2000L
     }
 
-    private lateinit var binding: ActivitySearchBinding
+    private lateinit var binding: FragmentSearchBinding
 
     private var savedText: String? = null
     private var isClickAllowed = true
@@ -36,23 +34,26 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var trackAdapter: TrackAdapter
     private var textWatcher: TextWatcher? = null
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         init()
-
-        binding.arrow2.setOnClickListener {
-            finish()
-        }
 
         binding.clearIcon.setOnClickListener {
             binding.inputEditText.setText("")
             trackAdapter.tracks.clear()
             trackAdapter.notifyDataSetChanged()
-            hideKeyboard()
 
         }
         binding.bClearHistoryBtn.setOnClickListener {
@@ -109,25 +110,19 @@ class SearchActivity : AppCompatActivity() {
 
             }
         }
-        viewModel.observeState().observe(this) {
+        viewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
         }
-        viewModel.trackListLiveData.observe(this) { trackListLive ->
+        viewModel.trackListLiveData.observe(viewLifecycleOwner) { trackListLive ->
             trackAdapter.tracks = ArrayList(trackListLive)
             trackAdapter.notifyDataSetChanged()
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
+
         textWatcher?.let { binding.inputEditText.removeTextChangedListener(it) }
-
-    }
-
-    private fun hideKeyboard() {
-        val inputMM =
-            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager  //константа для скрытия клавиатуры
-        inputMM.hideSoftInputFromWindow(binding.inputEditText.windowToken, 0)
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
@@ -145,12 +140,13 @@ class SearchActivity : AppCompatActivity() {
             override fun onItemClick(track: Track) {
                 if (clickDebounce()) {
                     viewModel.addToHistory(track)
-                    val playerIntent = Intent(this@SearchActivity, AudioPlayerActivity::class.java)
+                    val playerIntent = Intent(requireContext(), AudioPlayerActivity::class.java)
                     playerIntent.putExtra(CLICKED_ITEM, track)
                     startActivity(playerIntent)
                 }
             }
         })
+
         if (viewModel.trackListLiveData.value != null) {
             trackAdapter.tracks = ArrayList(viewModel.trackListLiveData.value!!)
         }
@@ -248,5 +244,6 @@ class SearchActivity : AppCompatActivity() {
             is SearchState.History -> showContent(state.history, state.isHistory)
         }
     }
+
 
 }
