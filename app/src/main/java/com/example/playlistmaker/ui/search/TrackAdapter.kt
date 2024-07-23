@@ -17,8 +17,9 @@ class TrackAdapter(
         val layoutInflater = LayoutInflater.from(parent.context)
         return TrackViewHolder(
             ItemTrackBinding.inflate(layoutInflater, parent, false),
-            listenerItem
+
         )
+
     }
 
     override fun getItemCount(): Int {
@@ -28,9 +29,10 @@ class TrackAdapter(
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
 
         holder.bind(tracks[position])
+        holder.itemView.setOnClickListener { listenerItem.onItemClick(tracks.get(position)) }
     }
 
-    interface OnClickListenerItem {
+   fun interface OnClickListenerItem {
         fun onItemClick(track: Track)
 
     }

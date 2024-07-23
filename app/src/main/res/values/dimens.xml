@@ -12,4 +12,5 @@
     <dimen name="fragment_placeholder_marginTop">106dp</dimen>
     <dimen name="fragment_placeholder_text_size">19sp</dimen>
     <dimen name="new_playlist_btn_text_size">14sp</dimen>
+    <dimen name="header_margin">4dp</dimen>
 </resources>

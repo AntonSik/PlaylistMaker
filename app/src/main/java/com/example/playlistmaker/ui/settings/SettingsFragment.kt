@@ -3,30 +3,37 @@ package com.example.playlistmaker.ui.settings
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.databinding.ActivitySettingsBinding
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.example.playlistmaker.databinding.FragmentSettingsBinding
 import com.example.playlistmaker.presentation.settings.SettingsViewModel
 import com.example.playlistmaker.utils.App
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsFragment: Fragment() {
 
-    private lateinit var binding: ActivitySettingsBinding
+    private lateinit var binding: FragmentSettingsBinding
+
     private val viewModel by viewModel<SettingsViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentSettingsBinding.inflate(inflater,container,false)
+        return binding.root
+    }
 
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.themeSwitcher.isChecked = viewModel.getTheme()
 
-        binding.arrow.setOnClickListener {
-            finish()
-        }
 
-        if ((applicationContext as App).darkTheme) {
+        if ((requireActivity().applicationContext as App).darkTheme) {
             binding.themeSwitcher.setChecked(true)
         }
 
@@ -56,7 +63,5 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(offerIntent)
 
         }
-
     }
-
 }

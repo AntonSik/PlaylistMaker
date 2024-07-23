@@ -13,7 +13,7 @@ import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.audioPlayer.AudioPlayerViewModel
 import com.example.playlistmaker.ui.audioPlayer.models.PlayerScreenState
-import com.example.playlistmaker.ui.search.SearchActivity
+import com.example.playlistmaker.ui.search.SearchFragment
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
 import java.text.SimpleDateFormat
@@ -27,7 +27,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val selectedTrack = intent.getParcelableExtra<Track>(SearchActivity.CLICKED_ITEM)!!
+        val selectedTrack = intent.getParcelableExtra<Track>(SearchFragment.CLICKED_ITEM)!!
         viewModel = getViewModel { parametersOf(selectedTrack) }
 
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
