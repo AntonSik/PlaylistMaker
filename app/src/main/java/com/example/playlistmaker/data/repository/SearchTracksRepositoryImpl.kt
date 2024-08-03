@@ -10,22 +10,24 @@ import com.example.playlistmaker.data.storage.LocalStorage
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.SearchTracksRepository
 import com.example.playlistmaker.utils.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class SearchTracksRepositoryImpl(
     private val context: Context,
     private val networkClient: NetworkClient,
     private val localStorage: LocalStorage,
 ) : SearchTracksRepository {
-    override fun searchTracks(expression: String): Resource<List<Track>> {
+    override fun searchTracks(expression: String): Flow<Resource<List<Track>>> = flow {
         val response = networkClient.doRequest(SearchTrackRequest(expression))
-        return when (response.resultCode) {
+        when(response.resultCode){
             -1 -> {
-                Resource.Error(context.getString(R.string.check_internet_connection))
+               emit(Resource.Error(context.getString(R.string.check_internet_connection)))
             }
 
             200 -> {
-
-                Resource.Success((response as SearchTrackResponse).results.map {
+                with(response as SearchTrackResponse){
+                val data = results.map {
                     Track(
                         it.trackId,
                         it.trackName,
@@ -38,11 +40,12 @@ class SearchTracksRepositoryImpl(
                         it.country,
                         it.previewUrl,
                     )
-                })
+                }
+                    emit(Resource.Success(data))
+                }
             }
-
             else -> {
-                Resource.Error(context.getString(R.string.server_error))
+               emit(Resource.Error(context.getString(R.string.server_error)))
             }
         }
     }
