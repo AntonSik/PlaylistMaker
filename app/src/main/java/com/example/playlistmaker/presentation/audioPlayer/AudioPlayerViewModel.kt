@@ -1,14 +1,15 @@
 package com.example.playlistmaker.presentation.audioPlayer
 
 
+import android.media.MediaPlayer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.api.PlayerInteractor
-import com.example.playlistmaker.domain.models.AudioPlayerState
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.audioPlayer.models.PlayerScreenState
+import com.example.playlistmaker.ui.audioPlayer.models.PlayerState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -17,7 +18,8 @@ import java.util.Locale
 
 class AudioPlayerViewModel(
     private val track: Track?,
-    private val playerInteractor: PlayerInteractor
+    private val playerInteractor: PlayerInteractor,
+    private var mediaPlayer: MediaPlayer
 ) : ViewModel() {
     companion object {
         private const val UPDATING_DELAY = 300L
@@ -27,20 +29,12 @@ class AudioPlayerViewModel(
 
     private var timerJob: Job? = null
 
-    private val playStateLiveData = MutableLiveData(
-        PlayerStatus(
-            isPlaying = false,
-            isCompleted = false,
-            state = AudioPlayerState.DEFAULT
-        )
-    )
-    val statusLive: LiveData<PlayerStatus> = playStateLiveData
-
-    private val timerLiveData = MutableLiveData<String>()
-    val timerLive: LiveData<String> = timerLiveData
 
     private val screenStateLiveData = MutableLiveData<PlayerScreenState>(PlayerScreenState.Loading)
     val screenStateLive: LiveData<PlayerScreenState> = screenStateLiveData
+
+    private val playerState = MutableLiveData<PlayerState>(PlayerState.Default())
+    fun observePlayerState(): LiveData<PlayerState> = playerState
 
     init {
         playerInteractor.loadTrackData(
@@ -50,78 +44,56 @@ class AudioPlayerViewModel(
                 PlayerScreenState.Content(playerModel)
             )
         }
-        prepare()
+        preparePlayer()
     }
 
     private fun play() {
-        playerInteractor.startPlayer()
-        playStateLiveData.value = playStateLiveData.value?.copy(
-            isPlaying = true,
-            isCompleted = false,
-            state = AudioPlayerState.PLAYING
-        )
-        timerLiveData.postValue(getCurrentPlayerPosition())
+        mediaPlayer.start()
+        playerState.postValue(PlayerState.Playing(getCurrentPlayerPosition()))
         startTimer()
     }
 
-    fun pause() {
-        playerInteractor.pausePlayer()
-        playStateLiveData.value = playStateLiveData.value?.copy(
-            isPlaying = false,
-            isCompleted = false,
-            state = AudioPlayerState.PAUSED
-        )
+    private fun pause() {
+        mediaPlayer.pause()
         timerJob?.cancel()
-        timerLiveData.postValue(getCurrentPlayerPosition())
+        playerState.postValue(PlayerState.Paused(getCurrentPlayerPosition()))
     }
 
-    private fun prepare() {
-        playerInteractor.preparePlayer(track?.previewUrl)
-        playStateLiveData.value =
-            playStateLiveData.value?.copy(isPlaying = false, state = AudioPlayerState.PREPARED)
-        playerInteractor.setOnCompletionCallback {
-            playStateLiveData.value = playStateLiveData.value?.copy(
-                isPlaying = false,
-                isCompleted = true,
-                state = AudioPlayerState.PREPARED
-            )
-            timerLiveData.postValue("00:00")
-            timerJob?.cancel()
-        }
-    }
 
-    fun release() {
-        playerInteractor.releasePlayer()
-        playStateLiveData.value = playStateLiveData.value?.copy(state = AudioPlayerState.DELETED)
+    private fun release() {
+        mediaPlayer.stop()
+        mediaPlayer.release()
+        playerState.value = PlayerState.Default()
     }
 
     override fun onCleared() {
+        super.onCleared()
         release()
     }
 
+    fun onPause() {
+        pause()
+    }
+
     fun playBackControl() {
-        when (statusLive.value?.state) {
-            AudioPlayerState.PLAYING -> {
+        when (playerState.value) {
+            is PlayerState.Playing -> {
                 pause()
             }
 
-            AudioPlayerState.PREPARED, AudioPlayerState.PAUSED -> {
+            is PlayerState.Prepared, is PlayerState.Paused -> {
                 play()
             }
 
-            AudioPlayerState.DELETED -> {
-                playerInteractor.getDefault()
-            }
-
-            else -> playerInteractor.preparePlayer(recordsUrl)
+            else -> preparePlayer()
         }
     }
 
     private fun startTimer() {
         timerJob = viewModelScope.launch {
-            while (statusLive.value?.isPlaying == true) {
+            while (mediaPlayer.isPlaying) {
                 delay(UPDATING_DELAY)
-                timerLiveData.postValue(getCurrentPlayerPosition())
+                playerState.postValue(PlayerState.Playing(getCurrentPlayerPosition()))
             }
         }
     }
@@ -130,13 +102,18 @@ class AudioPlayerViewModel(
         return SimpleDateFormat(
             "mm:ss",
             Locale.getDefault()
-        ).format(playerInteractor.getCurrentPosition()) ?: "00:00"
+        ).format(mediaPlayer.currentPosition) ?: "00:00"
     }
 
+    private fun preparePlayer() {
+        mediaPlayer.setDataSource(recordsUrl)
+        mediaPlayer.prepareAsync()
+        mediaPlayer.setOnPreparedListener {
+            playerState.postValue(PlayerState.Prepared())
+        }
+        mediaPlayer.setOnCompletionListener {
+            playerState.postValue(PlayerState.Prepared())
+        }
+    }
 
-    data class PlayerStatus(
-        val isPlaying: Boolean,
-        val isCompleted: Boolean,
-        val state: AudioPlayerState
-    )
 }

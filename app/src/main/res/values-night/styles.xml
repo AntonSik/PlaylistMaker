@@ -54,4 +54,8 @@
         <item name="colorSwitchThumbNormal">@color/YP_Light_Gray</item>
         <item name="android:colorForeground">@color/YP_blue</item>
     </style>
+
+    <style name="like_and_playlist_btn_style">
+        <item name="android:background">@drawable/round_button_player_night</item>
+    </style>
 </resources>
