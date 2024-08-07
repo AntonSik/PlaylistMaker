@@ -112,7 +112,9 @@ class AudioPlayerViewModel(
             playerState.postValue(PlayerState.Prepared())
         }
         mediaPlayer.setOnCompletionListener {
+            mediaPlayer.seekTo(0)
             playerState.postValue(PlayerState.Prepared())
+            timerJob?.cancel()
         }
     }
 
