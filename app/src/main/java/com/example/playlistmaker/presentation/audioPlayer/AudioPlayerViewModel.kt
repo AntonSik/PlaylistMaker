@@ -47,16 +47,20 @@ class AudioPlayerViewModel(
         preparePlayer()
     }
 
+
     private fun play() {
+
         mediaPlayer.start()
         playerState.postValue(PlayerState.Playing(getCurrentPlayerPosition()))
         startTimer()
+
     }
 
     private fun pause() {
         mediaPlayer.pause()
         timerJob?.cancel()
         playerState.postValue(PlayerState.Paused(getCurrentPlayerPosition()))
+
     }
 
 
@@ -64,6 +68,7 @@ class AudioPlayerViewModel(
         mediaPlayer.stop()
         mediaPlayer.release()
         playerState.value = PlayerState.Default()
+
     }
 
     override fun onCleared() {
@@ -85,7 +90,7 @@ class AudioPlayerViewModel(
                 play()
             }
 
-            else -> preparePlayer()
+            else -> {}
         }
     }
 
@@ -99,6 +104,7 @@ class AudioPlayerViewModel(
     }
 
     private fun getCurrentPlayerPosition(): String {
+
         return SimpleDateFormat(
             "mm:ss",
             Locale.getDefault()
@@ -106,6 +112,7 @@ class AudioPlayerViewModel(
     }
 
     private fun preparePlayer() {
+        mediaPlayer.reset()
         mediaPlayer.setDataSource(recordsUrl)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {

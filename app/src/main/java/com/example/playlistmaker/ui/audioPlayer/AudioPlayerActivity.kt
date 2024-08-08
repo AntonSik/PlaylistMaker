@@ -13,6 +13,7 @@ import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.audioPlayer.AudioPlayerViewModel
 import com.example.playlistmaker.ui.audioPlayer.models.PlayerScreenState
+import com.example.playlistmaker.ui.audioPlayer.models.PlayerState
 import com.example.playlistmaker.ui.search.SearchFragment
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
@@ -101,11 +102,12 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-
-        viewModel.onPause()
-        changeButtonStyle(false)
-
+        if (viewModel.observePlayerState().value is PlayerState.Playing) {
+            viewModel.onPause()
+            changeButtonStyle(false)
+        }
     }
+
 
     private fun changeButtonStyle(playingStatus: Boolean) {
         when (playingStatus) {
