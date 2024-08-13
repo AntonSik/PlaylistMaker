@@ -13,6 +13,7 @@ import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.audioPlayer.AudioPlayerViewModel
 import com.example.playlistmaker.ui.audioPlayer.models.PlayerScreenState
+import com.example.playlistmaker.ui.audioPlayer.models.PlayerState
 import com.example.playlistmaker.ui.search.SearchFragment
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
@@ -85,40 +86,28 @@ class AudioPlayerActivity : AppCompatActivity() {
                 }
             }
         }
-        viewModel.statusLive.observe(this) { status ->
-            when (status.isPlaying) {
-                true -> {
-                    changeButtonStyle(status.isPlaying)
-                }
 
-                else -> {
-                    changeButtonStyle(status.isPlaying)
-                }
-            }
-            if (status.isCompleted)
-                binding.tvTimePlaying.text = getString(R.string.zero)
-        }
-        viewModel.timerLive.observe(this) { timer ->
-            binding.tvTimePlaying.text = timer
-        }
         binding.btnPlay.setOnClickListener {
             viewModel.playBackControl()
         }
         binding.ibArrowBack.setOnClickListener { finish() }
+
+        viewModel.observePlayerState().observe(this) {
+            binding.btnPlay.isEnabled = it.isPlayButtonEnabled
+            binding.tvTimePlaying.text = it.progress
+            changeButtonStyle(it.buttonType)
+        }
     }
 
 
     override fun onPause() {
         super.onPause()
-        viewModel.pause()
-        changeButtonStyle(false)
-
+        if (viewModel.observePlayerState().value is PlayerState.Playing) {
+            viewModel.onPause()
+            changeButtonStyle(false)
+        }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.release()
-    }
 
     private fun changeButtonStyle(playingStatus: Boolean) {
         when (playingStatus) {

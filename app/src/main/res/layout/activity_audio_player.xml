@@ -82,12 +82,12 @@
             tools:text="Название группы" />
 
         <ImageButton
+            style="@style/like_and_playlist_btn_style"
             android:id="@+id/btn_addMedia"
             android:layout_width="51dp"
             android:layout_height="51dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="54dp"
-            android:background="@drawable/round_button_player"
             android:contentDescription="@string/content_description_add_media_btn"
             android:src="@drawable/media_vector"
             app:layout_constraintEnd_toStartOf="@+id/btn_play"
@@ -111,11 +111,11 @@
             app:layout_constraintTop_toBottomOf="@id/tv_artists" />
 
         <ImageButton
+            style="@style/like_and_playlist_btn_style"
             android:id="@+id/btn_like"
             android:layout_width="51dp"
             android:layout_height="51dp"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/round_button_player"
             android:contentDescription="@string/content_description_like_btn"
             android:src="@drawable/heart_vector"
             app:layout_constraintBottom_toBottomOf="@+id/btn_addMedia"

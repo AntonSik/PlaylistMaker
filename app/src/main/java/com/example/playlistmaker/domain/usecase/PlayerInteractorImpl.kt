@@ -1,11 +1,10 @@
 package com.example.playlistmaker.domain.usecase
 
 import com.example.playlistmaker.domain.api.PlayerInteractor
-import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.domain.repository.PlayerRepository
 import com.example.playlistmaker.domain.models.PlayerModel
+import com.example.playlistmaker.domain.models.Track
 
-class PlayerInteractorImpl(private val repository: PlayerRepository) : PlayerInteractor {
+class PlayerInteractorImpl : PlayerInteractor {
     override fun loadTrackData(track: Track?, onComplete: (PlayerModel) -> Unit) {
         track?.let {
             val playerModel = PlayerModel(
@@ -22,35 +21,6 @@ class PlayerInteractorImpl(private val repository: PlayerRepository) : PlayerInt
             )
             onComplete(playerModel)
         }
-    }
-
-
-    override fun preparePlayer(recordsUrl: String?) {
-        repository.preparePlayer(recordsUrl)
-    }
-
-    override fun releasePlayer() {
-        repository.releasePlayer()
-    }
-
-    override fun startPlayer() {
-        repository.startPlayer()
-    }
-
-    override fun pausePlayer() {
-        repository.pausePlayer()
-    }
-
-    override fun getDefault() {
-        repository.getDefault()
-    }
-
-    override fun getCurrentPosition(): Int {
-        return repository.getCurrentPosition()
-    }
-
-    override fun setOnCompletionCallback(callback: () -> Unit) {
-        repository.setOnCompletionCallback(callback)
     }
 
 }

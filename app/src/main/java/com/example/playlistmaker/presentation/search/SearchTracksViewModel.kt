@@ -1,15 +1,16 @@
 package com.example.playlistmaker.presentation.search
 
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.api.SearchTrackInteracktor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.search.models.SearchState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SearchTracksViewModel(
 
@@ -17,11 +18,10 @@ class SearchTracksViewModel(
 ) : ViewModel() {
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
-        private val SEARCH_REQUEST_TOKEN = Any()
     }
 
-    private val handler = Handler(Looper.getMainLooper())
     private var lastSearchText: String? = null
+    private var searchJob: Job? = null
 
 
     private val stateLiveData = MutableLiveData<SearchState>()
@@ -30,75 +30,62 @@ class SearchTracksViewModel(
     private val trackListMutable = MutableLiveData<List<Track>>()
     val trackListLiveData: LiveData<List<Track>> = trackListMutable
 
-
-    override fun onCleared() {
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-    }
-
     fun searchDebounce(changedText: String) {
         if (lastSearchText == changedText) {
             return
         }
-        this.lastSearchText = changedText
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-        val searchRunnable = Runnable { searchRequest(changedText) }
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-        handler.postAtTime(
-            searchRunnable,
-            SEARCH_REQUEST_TOKEN,
-            postTime,
-        )
+        lastSearchText = changedText
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+            searchRequest(changedText)
+        }
     }
 
     private fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
             renderState(SearchState.Loading)
 
-
-            searchInteractor.searchTracks(
-                newSearchText,
-                object : SearchTrackInteracktor.TracksConsumer {
-
-                    override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
-                        val trackList = mutableListOf<Track>()
-
-                        if (foundTracks != null) {
-                            trackList.addAll(foundTracks)
-                        }
-                        when {
-                            errorMessage != null -> {
-                                renderState(
-                                    SearchState.Error(
-                                        errorMessage = R.string.no_internet_connection,
-                                        errorMessageExtra = R.string.no_internet_connection_extra
-                                    )
-                                )
-                            }
-
-                            trackList.isEmpty() -> {
-                                renderState(
-                                    SearchState.Empty(
-                                        message = R.string.not_found
-                                    )
-                                )
-                            }
-
-                            else -> {
-                                renderState(
-                                    SearchState.Content(
-                                        tracks = trackList,
-                                        isHistory = false
-                                    )
-                                )
-
-                                trackListMutable.postValue(trackList)
-                            }
-
-                        }
-
+            viewModelScope.launch {
+                searchInteractor
+                    .searchTracks(newSearchText)
+                    .collect { pair ->
+                        processResult(pair.first, pair.second)
                     }
+            }
+        }
+    }
 
-                })
+    private fun processResult(foundTracks: List<Track>?, errorMessage: String?) {
+        val trackList = mutableListOf<Track>()
+        if (foundTracks != null) {
+            trackList.addAll(foundTracks)
+        }
+        when {
+            errorMessage != null -> {
+                renderState(SearchState.Error(
+                        errorMessage = R.string.no_internet_connection,
+                        errorMessageExtra = R.string.no_internet_connection_extra
+                    )
+                )
+            }
+
+            trackList.isEmpty() -> {
+                renderState(SearchState.Empty(
+                        message = R.string.not_found
+                    )
+                )
+            }
+
+            else -> {
+                renderState(SearchState.Content(
+                        tracks = trackList,
+                        isHistory = false
+                    )
+                )
+                trackListMutable.postValue(trackList)
+            }
+
         }
     }
 

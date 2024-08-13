@@ -2,8 +2,6 @@ package com.example.playlistmaker.ui.search
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -11,12 +9,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.search.SearchTracksViewModel
 import com.example.playlistmaker.ui.audioPlayer.AudioPlayerActivity
 import com.example.playlistmaker.ui.search.models.SearchState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -29,7 +30,6 @@ class SearchFragment : Fragment() {
 
     private var savedText: String? = null
     private var isClickAllowed = true
-    private val handler = Handler(Looper.getMainLooper())
     private val viewModel by viewModel<SearchTracksViewModel>()
 
     private lateinit var trackAdapter: TrackAdapter
@@ -158,7 +158,10 @@ class SearchFragment : Fragment() {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+            viewLifecycleOwner.lifecycleScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY)
+                isClickAllowed = true
+            }
         }
         return current
     }
