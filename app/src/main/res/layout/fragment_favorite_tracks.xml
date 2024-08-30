@@ -1,22 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/placeholder"
     style="@style/placeholder"
     android:visibility="visible"
-    tools:context=".ui.media.FavoriteTracksFragment">
+    tools:context=".ui.media.favorites.FavoriteTracksFragment">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="@dimen/progress_bar_size"
+        android:layout_height="@dimen/progress_bar_size"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/progress_bar_marginTop"
+        android:indeterminateTint="@color/YP_blue"
+        android:visibility="gone" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_recycleView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:itemCount="7"
+        tools:listitem="@layout/favorites_item_track"/>
     <ImageView
         android:id="@+id/iv_placeholderImage"
         style="@style/placeholder_image"
         android:layout_marginTop="@dimen/fragment_placeholder_marginTop"
         android:contentDescription="@string/content_description_bad_request"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tv_placeholderMessage"
         style="@style/placeholder_message"
         android:layout_marginTop="16dp"
-        android:text="@string/empty_favorite_tracks_placeholder_message" />
+        android:text="@string/empty_favorite_tracks_placeholder_message"
+        android:visibility="gone"/>
 
 </LinearLayout>

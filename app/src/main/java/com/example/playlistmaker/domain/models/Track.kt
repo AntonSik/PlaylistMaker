@@ -16,6 +16,7 @@ data class Track(
     val releaseDate: String,
     val country: String,
     val previewUrl: String,
+    var isFavorite: Boolean = false
 ) : Parcelable {
     override fun describeContents(): Int {
         return 0
@@ -47,7 +48,7 @@ data class Track(
                 releaseDate = source.readString() ?: "",
                 country = source.readString() ?: "",
                 previewUrl = source.readString() ?: "",
-
+                isFavorite = source.readBoolean()
                 )
         }
 

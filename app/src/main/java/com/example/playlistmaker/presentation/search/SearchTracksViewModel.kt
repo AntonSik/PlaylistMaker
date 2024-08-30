@@ -14,8 +14,9 @@ import kotlinx.coroutines.launch
 
 class SearchTracksViewModel(
 
-    private val searchInteractor: SearchTrackInteracktor
-) : ViewModel() {
+    private val searchInteractor: SearchTrackInteracktor,
+
+    ) : ViewModel() {
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
@@ -63,7 +64,8 @@ class SearchTracksViewModel(
         }
         when {
             errorMessage != null -> {
-                renderState(SearchState.Error(
+                renderState(
+                    SearchState.Error(
                         errorMessage = R.string.no_internet_connection,
                         errorMessageExtra = R.string.no_internet_connection_extra
                     )
@@ -71,14 +73,16 @@ class SearchTracksViewModel(
             }
 
             trackList.isEmpty() -> {
-                renderState(SearchState.Empty(
+                renderState(
+                    SearchState.Empty(
                         message = R.string.not_found
                     )
                 )
             }
 
             else -> {
-                renderState(SearchState.Content(
+                renderState(
+                    SearchState.Content(
                         tracks = trackList,
                         isHistory = false
                     )
@@ -98,8 +102,20 @@ class SearchTracksViewModel(
     }
 
     fun getHistory(): ArrayList<Track> {
-        return searchInteractor.getHistoryList()
+        val history = ArrayList<Track>()
+        viewModelScope.launch {
+            searchInteractor.getHistoryList().collect { historyList ->
+                renderState(
+                    SearchState.History(
+                        history = ArrayList(historyList),
+                        isHistory = true
+                    )
+                )
+            }
+        }
+        return history
     }
+
 
     fun clearHistory() {
         searchInteractor.clearHistory()
@@ -111,12 +127,7 @@ class SearchTracksViewModel(
     }
 
     private fun getHistoryState() {
-        renderState(
-            SearchState.History(
-                history = getHistory(),
-                isHistory = true
-            )
-        )
+        getHistory()
 
     }
 
@@ -133,4 +144,6 @@ class SearchTracksViewModel(
         if (isHistory) getHistoryState() else getContentState()
 
     }
+
+
 }

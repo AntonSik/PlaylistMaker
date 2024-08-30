@@ -8,6 +8,7 @@ import com.example.playlistmaker.presentation.media.PlaylistsViewModel
 import com.example.playlistmaker.presentation.search.SearchTracksViewModel
 import com.example.playlistmaker.presentation.settings.SettingsViewModel
 import org.koin.android.ext.koin.androidApplication
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -22,13 +23,13 @@ val viewModelModule = module {
     }
 
     viewModel { (track: Track?) ->
-        AudioPlayerViewModel(track = track, playerInteractor = get(), mediaPlayer = get())
+        AudioPlayerViewModel(track = track, playerInteractor = get(), favoriteTracksInteractor = get(), mediaPlayer = get())
     }
     viewModel {
         SearchTracksViewModel(searchInteractor = get())
     }
     viewModel {
-        FavoriteTracksViewModel()
+        FavoriteTracksViewModel(context = androidContext(), favoriteTracksInteractor = get())
     }
     viewModel {
         PlaylistsViewModel()

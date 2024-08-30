@@ -43,6 +43,7 @@ class SearchFragment : Fragment() {
 
         binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -95,7 +96,7 @@ class SearchFragment : Fragment() {
             when {
                 !hasFocus && binding.inputEditText.text.isEmpty() -> clearAdapter()
                 hasFocus && binding.inputEditText.text.isEmpty() && viewModel.getHistory()
-                    .isNotEmpty() -> viewModel.setHistoryFlag(true)
+                     .isNotEmpty() -> viewModel.setHistoryFlag(true)
 
                 hasFocus && binding.inputEditText.text.isNotEmpty() -> viewModel.setHistoryFlag(
                     false
@@ -117,6 +118,7 @@ class SearchFragment : Fragment() {
             trackAdapter.tracks = ArrayList(trackListLive)
             trackAdapter.notifyDataSetChanged()
         }
+
     }
 
     override fun onDestroyView() {
@@ -247,6 +249,7 @@ class SearchFragment : Fragment() {
             is SearchState.History -> showContent(state.history, state.isHistory)
         }
     }
+
 
 
 }

@@ -30,16 +30,19 @@
         tools:layout="@layout/activity_audio_player" />
     <fragment
         android:id="@+id/favoriteTracksFragment"
-        android:name="com.example.playlistmaker.ui.media.FavoriteTracksFragment"
+        android:name="com.example.playlistmaker.ui.media.favorites.FavoriteTracksFragment"
         android:label="fragment_favorite_tracks"
         tools:layout="@layout/fragment_favorite_tracks" >
         <action
             android:id="@+id/action_favoriteTracksFragment_to_playlistsFragment"
             app:destination="@id/playlistsFragment" />
+        <action
+            android:id="@+id/action_favoriteTracksFragment_to_audioPlayerActivity"
+            app:destination="@id/audioPlayerActivity" />
     </fragment>
     <fragment
         android:id="@+id/playlistsFragment"
-        android:name="com.example.playlistmaker.ui.media.PlaylistsFragment"
+        android:name="com.example.playlistmaker.ui.media.playlists.PlaylistsFragment"
         android:label="fragment_playlists"
         tools:layout="@layout/fragment_playlists" />
     <fragment

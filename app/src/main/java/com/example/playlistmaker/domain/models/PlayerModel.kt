@@ -11,4 +11,5 @@ data class PlayerModel(
     val releaseDate: String?,
     val country: String?,
     val previewUrl: String?,
+    var isFavorite: Boolean,
 )

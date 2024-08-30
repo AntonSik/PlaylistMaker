@@ -7,7 +7,9 @@ interface SearchTrackInteracktor {
 
     fun searchTracks(expression: String): Flow<Pair<List<Track>?, String?>>
     fun addTrack(track: Track)
-    fun getHistoryList(): ArrayList<Track>
+    fun getHistoryList(): Flow<List<Track>>
+
     fun clearHistory()
+
 
 }

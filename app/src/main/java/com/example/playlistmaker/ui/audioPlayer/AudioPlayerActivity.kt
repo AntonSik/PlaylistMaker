@@ -79,6 +79,12 @@ class AudioPlayerActivity : AppCompatActivity() {
                     }
                     binding.tvEnterGenre.text = screenState.playerModel.primaryGenreName
                     binding.tvEnterCountry.text = screenState.playerModel.country
+
+                    if (screenState.playerModel.isFavorite) {
+                        binding.btnLike.setImageResource(R.drawable.heart_active)
+                    } else {
+                        binding.btnLike.setImageResource(R.drawable.heart_vector)
+                    }
                 }
 
                 is PlayerScreenState.Loading -> {
@@ -92,10 +98,27 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
         binding.ibArrowBack.setOnClickListener { finish() }
 
+        binding.btnLike.setOnClickListener {
+            viewModel.onFavoriteClicked()
+        }
+
         viewModel.observePlayerState().observe(this) {
             binding.btnPlay.isEnabled = it.isPlayButtonEnabled
             binding.tvTimePlaying.text = it.progress
-            changeButtonStyle(it.buttonType)
+            changePlayButtonStyle(it.buttonType)
+        }
+        viewModel.favoriteLive.observe(this) { isFavorite ->
+            changeLikeButtonStyle(isFavorite)
+        }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModel
+        if (viewModel.favoriteLive.value == true) {
+            changeLikeButtonStyle(true)
         }
     }
 
@@ -104,15 +127,22 @@ class AudioPlayerActivity : AppCompatActivity() {
         super.onPause()
         if (viewModel.observePlayerState().value is PlayerState.Playing) {
             viewModel.onPause()
-            changeButtonStyle(false)
+            changePlayButtonStyle(false)
         }
     }
 
 
-    private fun changeButtonStyle(playingStatus: Boolean) {
+    private fun changePlayButtonStyle(playingStatus: Boolean) {
         when (playingStatus) {
             true -> binding.btnPlay.setImageResource(R.drawable.pause_vector)
             else -> binding.btnPlay.setImageResource(R.drawable.play_vector)
+        }
+    }
+
+    private fun changeLikeButtonStyle(isFavorite: Boolean) {
+        when (isFavorite) {
+            true -> binding.btnLike.setImageResource(R.drawable.heart_active)
+            else -> binding.btnLike.setImageResource(R.drawable.heart_vector)
         }
     }
 
