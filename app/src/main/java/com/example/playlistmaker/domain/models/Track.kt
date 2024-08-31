@@ -49,7 +49,7 @@ data class Track(
                 country = source.readString() ?: "",
                 previewUrl = source.readString() ?: "",
                 isFavorite = source.readBoolean()
-                )
+            )
         }
 
         override fun newArray(size: Int): Array<Track?> {
