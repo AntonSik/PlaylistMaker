@@ -28,11 +28,13 @@ class SearchTrackInteractorImpl(private val repository: SearchTracksRepository) 
         repository.addTrack(track)
     }
 
-    override fun getHistoryList(): ArrayList<Track> {
+    override fun getHistoryList(): Flow<List<Track>> {
         return repository.getHistoryList()
     }
 
     override fun clearHistory() {
         repository.clearHistory()
     }
+
+
 }

@@ -43,6 +43,7 @@ class SearchFragment : Fragment() {
 
         binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -117,6 +118,7 @@ class SearchFragment : Fragment() {
             trackAdapter.tracks = ArrayList(trackListLive)
             trackAdapter.notifyDataSetChanged()
         }
+
     }
 
     override fun onDestroyView() {
@@ -218,7 +220,7 @@ class SearchFragment : Fragment() {
         trackAdapter.notifyDataSetChanged()
 
 
-        if (isHistoryFlag) {
+        if (isHistoryFlag && trackList.isNotEmpty()) {
 
             binding.bClearHistoryBtn.visibility = View.VISIBLE
             binding.tvSearched.visibility = View.VISIBLE

@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.domain.api.FavoriteTracksInteractor
 import com.example.playlistmaker.domain.api.PlayerInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.audioPlayer.models.PlayerScreenState
@@ -19,6 +20,7 @@ import java.util.Locale
 class AudioPlayerViewModel(
     private val track: Track?,
     private val playerInteractor: PlayerInteractor,
+    private val favoriteTracksInteractor: FavoriteTracksInteractor,
     private var mediaPlayer: MediaPlayer
 ) : ViewModel() {
     companion object {
@@ -36,6 +38,9 @@ class AudioPlayerViewModel(
     private val playerState = MutableLiveData<PlayerState>(PlayerState.Default())
     fun observePlayerState(): LiveData<PlayerState> = playerState
 
+    private val favoriteLiveData = MutableLiveData<Boolean>()
+    val favoriteLive: LiveData<Boolean> = favoriteLiveData
+
     init {
         playerInteractor.loadTrackData(
             track = track
@@ -43,6 +48,7 @@ class AudioPlayerViewModel(
             screenStateLiveData.postValue(
                 PlayerScreenState.Content(playerModel)
             )
+
         }
         preparePlayer()
     }
@@ -117,11 +123,38 @@ class AudioPlayerViewModel(
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
             playerState.postValue(PlayerState.Prepared())
+            viewModelScope.launch {
+
+                favoriteLiveData.postValue(favoriteTracksInteractor.isFavoriteCheck(track!!.trackId))
+            }
         }
         mediaPlayer.setOnCompletionListener {
             mediaPlayer.seekTo(0)
             playerState.postValue(PlayerState.Prepared())
             timerJob?.cancel()
+        }
+    }
+
+    fun onFavoriteClicked() {
+        val currentTrack = track ?: return
+
+        viewModelScope.launch {
+            if (favoriteTracksInteractor.isFavoriteCheck(currentTrack.trackId)) {
+                favoriteTracksInteractor.deleteFavoriteTrack(currentTrack)
+                currentTrack.isFavorite = false
+                favoriteLiveData.postValue(false)
+            } else {
+                favoriteTracksInteractor.addFavoriteTrack(currentTrack)
+                currentTrack.isFavorite = true
+                favoriteLiveData.postValue(true)
+            }
+            playerInteractor.loadTrackData(
+                track = currentTrack
+            ) { playerModel ->
+                screenStateLiveData.postValue(
+                    PlayerScreenState.Content(playerModel)
+                )
+            }
         }
     }
 

@@ -18,6 +18,7 @@ class PlayerInteractorImpl : PlayerInteractor {
                 releaseDate = track.releaseDate,
                 country = track.country,
                 previewUrl = track.previewUrl,
+                isFavorite = track.isFavorite
             )
             onComplete(playerModel)
         }

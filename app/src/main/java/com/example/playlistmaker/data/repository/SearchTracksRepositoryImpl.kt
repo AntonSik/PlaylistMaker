@@ -7,6 +7,7 @@ import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.dto.SearchTrackRequest
 import com.example.playlistmaker.data.dto.SearchTrackResponse
 import com.example.playlistmaker.data.storage.LocalStorage
+import com.example.playlistmaker.data.storage.db.TracksDatabase
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.SearchTracksRepository
 import com.example.playlistmaker.utils.Resource
@@ -17,6 +18,7 @@ class SearchTracksRepositoryImpl(
     private val context: Context,
     private val networkClient: NetworkClient,
     private val localStorage: LocalStorage,
+    private val tracksDatabase: TracksDatabase,
 ) : SearchTracksRepository {
     override fun searchTracks(expression: String): Flow<Resource<List<Track>>> = flow {
         val response = networkClient.doRequest(SearchTrackRequest(expression))
@@ -27,6 +29,7 @@ class SearchTracksRepositoryImpl(
 
             200 -> {
                 with(response as SearchTrackResponse){
+                val favoriteTracksId = getFavoritesId()
                 val data = results.map {
                     Track(
                         it.trackId,
@@ -39,6 +42,7 @@ class SearchTracksRepositoryImpl(
                         it.releaseDate,
                         it.country,
                         it.previewUrl,
+                        isFavorite = favoriteTracksId.contains(it.trackId)
                     )
                 }
                     emit(Resource.Success(data))
@@ -54,12 +58,23 @@ class SearchTracksRepositoryImpl(
         localStorage.addTrack(track)
     }
 
-    override fun getHistoryList(): ArrayList<Track> {
-        return localStorage.getHistoryList()
+    override fun getHistoryList(): Flow<List<Track>> = flow {
+        val historyList =  localStorage.getHistoryList()
+        val favoritesHistoryId = getFavoritesId()
+
+        val data = historyList.map { track ->
+            track.isFavorite = favoritesHistoryId.contains(track.trackId)
+            track
+        }
+       emit(data)
     }
 
     override fun clearHistory() {
         localStorage.clearHistory()
+    }
+
+    private suspend fun getFavoritesId(): List<Int>{
+       return tracksDatabase.trackDao().getFavoritesTracksId()
     }
 
 }

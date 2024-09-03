@@ -5,7 +5,7 @@
     android:id="@+id/placeholder"
     style="@style/placeholder"
     android:visibility="visible"
-    tools:context=".ui.media.PlaylistsFragment">
+    tools:context=".ui.media.playlists.PlaylistsFragment">
 
     <Button
         android:id="@+id/b_new_playlist_btn"
