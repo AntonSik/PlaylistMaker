@@ -137,5 +137,10 @@
     <style name="like_and_playlist_btn_style">
         <item name="android:background">@drawable/round_button_player</item>
     </style>
+    <style name="DialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog">
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/black</item>
+    </style>
+
 
 </resources>
