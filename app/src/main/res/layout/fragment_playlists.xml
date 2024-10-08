@@ -17,17 +17,34 @@
         android:visibility="visible"
         app:cornerRadius="@dimen/button_search_activity_corners" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="@dimen/progress_bar_size"
+        android:layout_height="@dimen/progress_bar_size"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/progress_bar_marginTop"
+        android:indeterminateTint="@color/YP_blue"
+        android:visibility="gone" />
+
     <ImageView
         android:id="@+id/iv_placeholderImage"
         style="@style/placeholder_image"
         android:layout_marginTop="46dp"
         android:contentDescription="@string/content_description_bad_request"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tv_placeholderMessage"
         style="@style/placeholder_message"
         android:layout_marginTop="16dp"
-        android:text="@string/empty_playlists_placeholder_message" />
+        android:text="@string/empty_playlists_placeholder_message"
+        android:visibility="gone"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_recyclerView_playlist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        />
 
 </LinearLayout>

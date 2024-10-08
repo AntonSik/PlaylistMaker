@@ -6,6 +6,7 @@ import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.network.ItunesApi
 import com.example.playlistmaker.data.network.RetrofitNetworkClient
 import com.example.playlistmaker.data.storage.LocalStorage
+import com.example.playlistmaker.data.storage.db.MIGRATION_4_5
 import com.example.playlistmaker.data.storage.db.TracksDatabase
 import com.example.playlistmaker.utils.App.Companion.SHARED_PREFERENCES
 import com.google.gson.Gson
@@ -41,7 +42,10 @@ val dataModule = module {
         Room.databaseBuilder(
             context = androidContext(),
             klass = TracksDatabase::class.java,
-            name = "database.db").fallbackToDestructiveMigration()
+            name = "database.db").addMigrations(MIGRATION_4_5)
+            .fallbackToDestructiveMigration()
             .build()
     }
+    single { get<TracksDatabase>().trackDao() }
+    single { get<TracksDatabase>().playlistDao()}
 }
