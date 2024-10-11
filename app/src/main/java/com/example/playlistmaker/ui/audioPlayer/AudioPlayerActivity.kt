@@ -28,7 +28,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class AudioPlayerActivity : AppCompatActivity() {
-    companion object{
+    companion object {
         const val NAVIGATE_TO_CREATE = "Navigate to create"
         const val PREVIOUS_SCREEN = "previous screen"
 
@@ -36,7 +36,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAudioPlayerBinding
     private lateinit var viewModel: AudioPlayerViewModel
-    private var adapter : BottomSheetPlaylistAdapter? = null
+    private var adapter: BottomSheetPlaylistAdapter? = null
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
 
 
@@ -51,12 +51,13 @@ class AudioPlayerActivity : AppCompatActivity() {
         val bottomSheetContainer = binding.playlistsBottomSheet
         val overlay = binding.overlay
 
-        val bottomSheetBehavior =BottomSheetBehavior.from(bottomSheetContainer).apply {
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
         }
-        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback(){
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                when(newState){
+                when (newState) {
 
                     BottomSheetBehavior.STATE_HIDDEN -> {
                         overlay.visibility = View.GONE
@@ -64,7 +65,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
                     else -> {
                         overlay.visibility = View.VISIBLE
-                        viewModel.observe().observe(this@AudioPlayerActivity){
+                        viewModel.stateLive.observe(this@AudioPlayerActivity) {
                             render(it)
                         }
                     }
@@ -83,14 +84,25 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
         binding.rvBottomSheetRecyclerView.adapter = adapter
         viewModel.fillBottomSheet()
-        viewModel.observe().observe(this){
+        viewModel.stateLive.observe(this) {
             render(it)
         }
 
-        viewModel.insertTrackStatusLive.observe(this){insertTrackStatus->
-            Toast.makeText(this,insertTrackStatus, Toast.LENGTH_LONG).show()
-            if (insertTrackStatus.contains("успешно добавлен")){
+        viewModel.insertTrackStatusLive.observe(this) { insertTrackStatus ->
+
+            if (insertTrackStatus.isSuccess) {
+                Toast.makeText(
+                    this,
+                    getString(R.string.track_added_successfully, insertTrackStatus.playlistTitle),
+                    Toast.LENGTH_LONG
+                ).show()
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            } else {
+                Toast.makeText(
+                    this,
+                    getString(R.string.track_already_added, insertTrackStatus.playlistTitle),
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
 
@@ -107,7 +119,7 @@ class AudioPlayerActivity : AppCompatActivity() {
                         .load(url)
                         .placeholder(R.drawable.placeholder)
                         .transform(
-                            FitCenter(),RoundedCorners(dpToPx(8f, this))
+                            FitCenter(), RoundedCorners(dpToPx(8f, this))
                         )
                         .into(binding.ivCover)
 
@@ -168,8 +180,8 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
 
         binding.btnBottomSheetAddNewPlaylist.setOnClickListener {
-           val intent = Intent(this, RootActivity::class.java)
-            intent.putExtra(NAVIGATE_TO_CREATE,2)
+            val intent = Intent(this, RootActivity::class.java)
+            intent.putExtra(NAVIGATE_TO_CREATE, 2)
             intent.putExtra(PREVIOUS_SCREEN, "AudioPlayerActivity")
             startActivity(intent)
         }
@@ -260,7 +272,8 @@ class AudioPlayerActivity : AppCompatActivity() {
         adapter?.playlists?.addAll(playlists)
         adapter?.notifyDataSetChanged()
     }
-    private fun showEmpty(message:String) {
+
+    private fun showEmpty(message: String) {
         binding.bottomSheetProgressBar.visibility = View.GONE
         binding.rvBottomSheetRecyclerView.visibility = View.GONE
 
@@ -269,6 +282,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding.tvBottomSheetPlaceholderMessage.text = message
 
     }
+
     private fun showLoading() {
         binding.bottomSheetProgressBar.visibility = View.VISIBLE
         binding.ivBottomSheetPlaceholderImage.visibility = View.GONE

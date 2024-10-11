@@ -52,6 +52,7 @@ class PlaylistsCreatorFragment : Fragment() {
     companion object {
         fun newInstance() = PlaylistsCreatorFragment()
         const val PREVIOUS_SCREEN = "previous screen"
+        const val PREVIOUS_SCREEN_IS_AUDIO_PLAYER = "AudioPlayerActivity"
 
     }
 
@@ -86,7 +87,7 @@ class PlaylistsCreatorFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                isCreateAllowed = !s.isNullOrEmpty()
+                isCreateAllowed = !s.isNullOrEmpty() && s.trim().isNotEmpty()
                 binding.createPlaylistBtn.isEnabled = isCreateAllowed
 
                 createBtnIsAllowed(isCreateAllowed)
@@ -140,8 +141,7 @@ class PlaylistsCreatorFragment : Fragment() {
 
         binding.createPlaylistBtn.setOnClickListener {
             viewModel.addNewPlaylistToDb(createNewPlaylist())
-            (activity as? BottomNavBarShower)?.showNavbar()
-            requireActivity().supportFragmentManager.popBackStack()
+            navigateBack()
             Toast.makeText(
                 requireContext().applicationContext,
                 requireContext().getString(R.string.playlist_created, binding.etTitle.text),
@@ -181,21 +181,19 @@ class PlaylistsCreatorFragment : Fragment() {
         return file.absolutePath
     }
 
-    private fun loadImage(): String {
+    private fun loadImage(): String? {
 
-        val file = if (!viewModel.getImagePath().isNullOrEmpty()) {
-            File(viewModel.getImagePath()!!)
-        } else {
-            File("android.resource://${requireContext().packageName}/drawable/placeholder")
-        }
+        val file = viewModel.getImagePath()?.let { File(it) }
+
         Glide.with(binding.ivPickerCover)
             .load(file)
+            .placeholder(R.drawable.placeholder)
             .transform(
-                CenterCrop(),RoundedCorners(dpToPx(8f, requireContext()))
+                CenterCrop(), RoundedCorners(dpToPx(8f, requireContext()))
             )
             .into(binding.ivPickerCover)
 
-        return file.absolutePath
+        return file?.absolutePath
     }
 
     private fun createNewPlaylist(): Playlist {
@@ -214,16 +212,17 @@ class PlaylistsCreatorFragment : Fragment() {
 
     private fun setUpDialog() {
 
-        confirmCloseCreatingDialog = MaterialAlertDialogBuilder(requireContext(),R.style.DialogTheme)
-            .setTitle(R.string.confirm_ending_playlist_creating)
-            .setMessage(R.string.confirm_ending_playlist_creating_message)
-            .setNegativeButton(R.string.dialog_negative_btn) { dialog, which ->
-                dialog.dismiss()
+        confirmCloseCreatingDialog =
+            MaterialAlertDialogBuilder(requireContext(), R.style.DialogTheme)
+                .setTitle(R.string.confirm_ending_playlist_creating)
+                .setMessage(R.string.confirm_ending_playlist_creating_message)
+                .setNegativeButton(R.string.dialog_negative_btn) { dialog, which ->
+                    dialog.dismiss()
 
-            }
-            .setPositiveButton(R.string.dialog_positive_btn) { dialog, which ->
-                navigateBack()
-            }
+                }
+                .setPositiveButton(R.string.dialog_positive_btn) { dialog, which ->
+                    navigateBack()
+                }
 
     }
 
@@ -254,7 +253,7 @@ class PlaylistsCreatorFragment : Fragment() {
     private fun navigateBack() {
         val previousScreen = arguments?.getString(PREVIOUS_SCREEN)
         when (previousScreen) {
-            "AudioPlayerActivity" -> {
+            PREVIOUS_SCREEN_IS_AUDIO_PLAYER -> {
                 requireActivity().finish()
             }
 

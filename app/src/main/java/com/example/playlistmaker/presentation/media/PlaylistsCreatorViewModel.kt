@@ -10,7 +10,7 @@ class PlaylistsCreatorViewModel(
     private val interactor: PlaylistInteractor
 ) : ViewModel() {
 
-    private val playlistsCoverPathlist = mutableListOf<String>()
+    private val playlistsCoverPathList = mutableListOf<String>()
 
     fun addNewPlaylistToDb(playlist: Playlist) {
         viewModelScope.launch {
@@ -19,12 +19,12 @@ class PlaylistsCreatorViewModel(
     }
 
     fun writeFileName(filePath: String) {
-        if (!playlistsCoverPathlist.contains(filePath)) {
-            playlistsCoverPathlist.add(filePath)
+        if (!playlistsCoverPathList.contains(filePath)) {
+            playlistsCoverPathList.add(filePath)
         }
     }
 
     fun getImagePath(): String? {
-        return playlistsCoverPathlist.lastOrNull()
+        return playlistsCoverPathList.lastOrNull()
     }
 }

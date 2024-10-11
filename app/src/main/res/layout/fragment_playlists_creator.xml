@@ -19,7 +19,7 @@
             style="@style/header_style"
             android:layout_width="0dp"
             android:layout_height="56dp"
-            android:text="@string/create_playlist"
+            android:text="@string/new_playlist"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/ib_back"
             app:layout_constraintTop_toTopOf="parent" />

@@ -13,6 +13,7 @@ import com.example.playlistmaker.domain.models.Playlist
 class PlaylistViewHolder(
     private val binding: ItemPlaylistBinding
 ) : RecyclerView.ViewHolder(binding.root) {
+    private val trackEnding = itemView.context.resources
 
     fun bind(item: Playlist) {
         val filePath = item.filePath
@@ -38,23 +39,11 @@ class PlaylistViewHolder(
     }
 
     private fun changingTracksCountEnding(tracksCount: Int?): String {
-        val trackEnding: String
-        val defaultEnding = "0 треков"
-        if (tracksCount == null) {
-            return defaultEnding
+        val defaultEnding = itemView.context.getString(R.string.zero_tracks)
+        return if (tracksCount == null) {
+            defaultEnding
         } else {
-            val firstNumber = tracksCount % 100
-            val lastNumber = tracksCount % 10
-            trackEnding = if (firstNumber in 10..20) {
-                "треков"
-            } else if (lastNumber in 2..5) {
-                "трека"
-            } else if (lastNumber == 1) {
-                "трек"
-            } else {
-                "треков"
-            }
-            return "$tracksCount $trackEnding"
+            return trackEnding.getQuantityString(R.plurals.count_of_tracks, tracksCount,tracksCount)
         }
     }
 }

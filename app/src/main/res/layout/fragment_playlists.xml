@@ -12,7 +12,7 @@
         style="@style/clear_history_and_new_playlist_btn"
         android:layout_height="36dp"
         android:layout_marginTop="24dp"
-        android:text="@string/new_playlist_btn"
+        android:text="@string/new_playlist"
         android:theme="@style/Update_btn_theme"
         android:visibility="visible"
         app:cornerRadius="@dimen/button_search_activity_corners" />

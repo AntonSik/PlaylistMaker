@@ -18,6 +18,7 @@ class PlaylistsFragment : Fragment() {
     companion object {
         fun newInstance() = PlaylistsFragment()
         const val PREVIOUS_SCREEN = "previous screen"
+        const val PREVIOUS_SCREEN_IS_PLAYLIST = "PlaylistsFragment"
     }
 
     private lateinit var binding: FragmentPlaylistsBinding
@@ -40,7 +41,7 @@ class PlaylistsFragment : Fragment() {
         binding.rvRecyclerViewPlaylist.adapter = adapter
 
         viewModel.fillData()
-        viewModel.observe().observe(viewLifecycleOwner){
+        viewModel.stateLive.observe(viewLifecycleOwner){
             render(it)
         }
 
@@ -48,7 +49,7 @@ class PlaylistsFragment : Fragment() {
             (activity as? BottomNavBarShower)?.hideNavBar()
             val fragment = PlaylistsCreatorFragment.newInstance().apply {
                 arguments = Bundle().apply {
-                    putString(PREVIOUS_SCREEN,"PlaylistsFragment")
+                    putString(PREVIOUS_SCREEN, PREVIOUS_SCREEN_IS_PLAYLIST)
                 }
             }
             requireActivity().supportFragmentManager.beginTransaction()

@@ -11,6 +11,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.api.FavoriteTracksInteractor
 import com.example.playlistmaker.domain.api.PlayerInteractor
 import com.example.playlistmaker.domain.api.PlaylistInteractor
+import com.example.playlistmaker.domain.models.InsertTrackResult
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.audioPlayer.models.PlayerScreenState
@@ -49,10 +50,10 @@ class AudioPlayerViewModel(
     val favoriteLive: LiveData<Boolean> = favoriteLiveData
 
     private val stateLiveData = MutableLiveData<PlaylistState>()
-    fun observe(): LiveData<PlaylistState> = stateLiveData
+    val stateLive: LiveData<PlaylistState> = stateLiveData
 
-    private val insertTrackStatus = MutableLiveData<String>()
-    val insertTrackStatusLive : LiveData<String> = insertTrackStatus
+    private val insertTrackStatus = MutableLiveData<InsertTrackResult>()
+    val insertTrackStatusLive: LiveData<InsertTrackResult> = insertTrackStatus
 
     init {
         playerInteractor.loadTrackData(
@@ -171,35 +172,37 @@ class AudioPlayerViewModel(
         }
     }
 
-    fun fillBottomSheet(){
+    fun fillBottomSheet() {
         render(PlaylistState.Loading)
         viewModelScope.launch {
             playlistInteractor.getAllPlaylists()
-                .collect{playlists->
+                .collect { playlists ->
                     showData(playlists)
                 }
         }
     }
-   private fun showData(playlists: List<Playlist>){
-        if (playlists.isEmpty()){
+
+    private fun showData(playlists: List<Playlist>) {
+        if (playlists.isEmpty()) {
             render(PlaylistState.Empty(context.getString(R.string.empty_playlists_placeholder_message)))
-        }else{
+        } else {
             render(PlaylistState.Content(playlists))
         }
     }
-    private fun render(state: PlaylistState){
+
+    private fun render(state: PlaylistState) {
         stateLiveData.postValue(state)
     }
 
-    fun onInsertTrackToPlaylist(playlist: Playlist){
+    fun onInsertTrackToPlaylist(playlist: Playlist) {
         val currentTrack = track ?: return
 
         viewModelScope.launch {
-            if (playlistInteractor.checkTrackInPlaylist(currentTrack.trackId,playlist)){
-                insertTrackStatus.postValue(context.getString(R.string.track_already_added,playlist.title))
-            }else{
+            if (playlistInteractor.checkTrackInPlaylist(currentTrack.trackId, playlist)) {
+                insertTrackStatus.postValue(InsertTrackResult(false, playlist.title))
+            } else {
                 playlistInteractor.addTrackToPlaylist(currentTrack, playlist)
-                insertTrackStatus.postValue(context.getString(R.string.track_added_successfully,playlist.title))
+                insertTrackStatus.postValue(InsertTrackResult(true, playlist.title))
 
             }
         }

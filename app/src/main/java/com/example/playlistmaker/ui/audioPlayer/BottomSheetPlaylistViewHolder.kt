@@ -14,6 +14,7 @@ class BottomSheetPlaylistViewHolder(
     private val binding: ItemPlaylistBottomSheetBinding
 ) : RecyclerView.ViewHolder(binding.root) {
     private val ivCoverIcon = itemView.findViewById<ImageView>(R.id.iv_cover_icon)
+    private val trackEnding = itemView.context.resources
 
     fun bind(item: Playlist) {
         val url = item.filePath
@@ -26,6 +27,7 @@ class BottomSheetPlaylistViewHolder(
 
         binding.tvPlaylistTitle.text = item.title
         binding.tvPlaylistCountTracks.text = changingTracksCountEnding(item.trackCount)
+
     }
 
     private fun dpToPx(dp: Float, context: Context): Int {
@@ -37,23 +39,11 @@ class BottomSheetPlaylistViewHolder(
     }
 
     private fun changingTracksCountEnding(tracksCount: Int?): String {
-        val trackEnding: String
-        val defaultEnding = "0 треков"
-        if (tracksCount == null) {
-            return defaultEnding
+        val defaultEnding = itemView.context.getString(R.string.zero_tracks)
+        return if (tracksCount == null) {
+             defaultEnding
         } else {
-            val firstNumber = tracksCount % 100
-            val lastNumber = tracksCount % 10
-            trackEnding = if (firstNumber in 10..20) {
-                "треков"
-            } else if (lastNumber in 2..5) {
-                "трека"
-            } else if (lastNumber == 1) {
-                "трек"
-            } else {
-                "треков"
-            }
-            return "$tracksCount $trackEnding"
+         return trackEnding.getQuantityString(R.plurals.count_of_tracks, tracksCount,tracksCount)
         }
     }
 }
