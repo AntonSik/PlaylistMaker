@@ -8,6 +8,7 @@ import com.example.playlistmaker.di.dataModule
 import com.example.playlistmaker.di.interactorModule
 import com.example.playlistmaker.di.repositoryModule
 import com.example.playlistmaker.di.viewModelModule
+import com.markodevcic.peko.PermissionRequester
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -30,6 +31,7 @@ class App : Application() {
             modules(interactorModule, repositoryModule, dataModule, viewModelModule)
         }
 
+        PermissionRequester.initialize(applicationContext)
 
         sharedPrefs = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
         darkTheme = sharedPrefs.getBoolean(

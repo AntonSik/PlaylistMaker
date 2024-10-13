@@ -1,16 +1,22 @@
 package com.example.playlistmaker.presentation.audioPlayer
 
 
+import android.content.Context
 import android.media.MediaPlayer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.api.FavoriteTracksInteractor
 import com.example.playlistmaker.domain.api.PlayerInteractor
+import com.example.playlistmaker.domain.api.PlaylistInteractor
+import com.example.playlistmaker.domain.models.InsertTrackResult
+import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.audioPlayer.models.PlayerScreenState
 import com.example.playlistmaker.ui.audioPlayer.models.PlayerState
+import com.example.playlistmaker.ui.media.models.PlaylistState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -18,9 +24,11 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class AudioPlayerViewModel(
+    private val context: Context,
     private val track: Track?,
     private val playerInteractor: PlayerInteractor,
     private val favoriteTracksInteractor: FavoriteTracksInteractor,
+    private val playlistInteractor: PlaylistInteractor,
     private var mediaPlayer: MediaPlayer
 ) : ViewModel() {
     companion object {
@@ -40,6 +48,12 @@ class AudioPlayerViewModel(
 
     private val favoriteLiveData = MutableLiveData<Boolean>()
     val favoriteLive: LiveData<Boolean> = favoriteLiveData
+
+    private val stateLiveData = MutableLiveData<PlaylistState>()
+    val stateLive: LiveData<PlaylistState> = stateLiveData
+
+    private val insertTrackStatus = MutableLiveData<InsertTrackResult>()
+    val insertTrackStatusLive: LiveData<InsertTrackResult> = insertTrackStatus
 
     init {
         playerInteractor.loadTrackData(
@@ -154,6 +168,42 @@ class AudioPlayerViewModel(
                 screenStateLiveData.postValue(
                     PlayerScreenState.Content(playerModel)
                 )
+            }
+        }
+    }
+
+    fun fillBottomSheet() {
+        render(PlaylistState.Loading)
+        viewModelScope.launch {
+            playlistInteractor.getAllPlaylists()
+                .collect { playlists ->
+                    showData(playlists)
+                }
+        }
+    }
+
+    private fun showData(playlists: List<Playlist>) {
+        if (playlists.isEmpty()) {
+            render(PlaylistState.Empty(context.getString(R.string.empty_playlists_placeholder_message)))
+        } else {
+            render(PlaylistState.Content(playlists))
+        }
+    }
+
+    private fun render(state: PlaylistState) {
+        stateLiveData.postValue(state)
+    }
+
+    fun onInsertTrackToPlaylist(playlist: Playlist) {
+        val currentTrack = track ?: return
+
+        viewModelScope.launch {
+            if (playlistInteractor.checkTrackInPlaylist(currentTrack.trackId, playlist)) {
+                insertTrackStatus.postValue(InsertTrackResult(false, playlist.title))
+            } else {
+                playlistInteractor.addTrackToPlaylist(currentTrack, playlist)
+                insertTrackStatus.postValue(InsertTrackResult(true, playlist.title))
+
             }
         }
     }

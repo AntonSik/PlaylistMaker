@@ -1,30 +1,44 @@
 package com.example.playlistmaker.ui.audioPlayer
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
+import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.audioPlayer.AudioPlayerViewModel
 import com.example.playlistmaker.ui.audioPlayer.models.PlayerScreenState
 import com.example.playlistmaker.ui.audioPlayer.models.PlayerState
+import com.example.playlistmaker.ui.media.models.PlaylistState
+import com.example.playlistmaker.ui.root.RootActivity
 import com.example.playlistmaker.ui.search.SearchFragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class AudioPlayerActivity : AppCompatActivity() {
+    companion object {
+        const val NAVIGATE_TO_CREATE = "Navigate to create"
+        const val PREVIOUS_SCREEN = "previous screen"
+
+    }
 
     private lateinit var binding: ActivityAudioPlayerBinding
     private lateinit var viewModel: AudioPlayerViewModel
+    private var adapter: BottomSheetPlaylistAdapter? = null
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +47,64 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val bottomSheetContainer = binding.playlistsBottomSheet
+        val overlay = binding.overlay
+
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        overlay.visibility = View.GONE
+                    }
+
+                    else -> {
+                        overlay.visibility = View.VISIBLE
+                        viewModel.stateLive.observe(this@AudioPlayerActivity) {
+                            render(it)
+                        }
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                overlay.alpha = slideOffset
+            }
+        })
+
+        adapter = BottomSheetPlaylistAdapter { playlist ->
+            viewModel.onInsertTrackToPlaylist(
+                playlist
+            )
+        }
+        binding.rvBottomSheetRecyclerView.adapter = adapter
+        viewModel.fillBottomSheet()
+        viewModel.stateLive.observe(this) {
+            render(it)
+        }
+
+        viewModel.insertTrackStatusLive.observe(this) { insertTrackStatus ->
+
+            if (insertTrackStatus.isSuccess) {
+                Toast.makeText(
+                    this,
+                    getString(R.string.track_added_successfully, insertTrackStatus.playlistTitle),
+                    Toast.LENGTH_LONG
+                ).show()
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            } else {
+                Toast.makeText(
+                    this,
+                    getString(R.string.track_already_added, insertTrackStatus.playlistTitle),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
 
         viewModel.screenStateLive.observe(this) { screenState ->
             when (screenState) {
@@ -46,8 +118,9 @@ class AudioPlayerActivity : AppCompatActivity() {
                     Glide.with(this)
                         .load(url)
                         .placeholder(R.drawable.placeholder)
-                        .fitCenter()
-                        .transform(RoundedCorners(dpToPx(8f, this)))
+                        .transform(
+                            FitCenter(), RoundedCorners(dpToPx(8f, this))
+                        )
                         .into(binding.ivCover)
 
                     binding.tvTrackName.text = screenState.playerModel.trackName
@@ -102,6 +175,18 @@ class AudioPlayerActivity : AppCompatActivity() {
             viewModel.onFavoriteClicked()
         }
 
+        binding.btnAddMedia.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+
+        binding.btnBottomSheetAddNewPlaylist.setOnClickListener {
+            val intent = Intent(this, RootActivity::class.java)
+            intent.putExtra(NAVIGATE_TO_CREATE, 2)
+            intent.putExtra(PREVIOUS_SCREEN, "AudioPlayerActivity")
+            startActivity(intent)
+        }
+
+
         viewModel.observePlayerState().observe(this) {
             binding.btnPlay.isEnabled = it.isPlayButtonEnabled
             binding.tvTimePlaying.text = it.progress
@@ -129,6 +214,12 @@ class AudioPlayerActivity : AppCompatActivity() {
             viewModel.onPause()
             changePlayButtonStyle(false)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        adapter = null
+        binding.rvBottomSheetRecyclerView.adapter = null
     }
 
 
@@ -163,6 +254,42 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding.tvTimePlaying.isVisible = !loading
     }
 
+    private fun render(state: PlaylistState) {
+        when (state) {
+            is PlaylistState.Content -> showContent(state.playlists)
+            is PlaylistState.Empty -> showEmpty(state.message)
+            PlaylistState.Loading -> showLoading()
+        }
+    }
+
+    private fun showContent(playlists: List<Playlist>) {
+        binding.bottomSheetProgressBar.visibility = View.GONE
+        binding.ivBottomSheetPlaceholderImage.visibility = View.GONE
+        binding.tvBottomSheetPlaceholderMessage.visibility = View.GONE
+
+        binding.rvBottomSheetRecyclerView.visibility = View.VISIBLE
+        adapter?.playlists?.clear()
+        adapter?.playlists?.addAll(playlists)
+        adapter?.notifyDataSetChanged()
+    }
+
+    private fun showEmpty(message: String) {
+        binding.bottomSheetProgressBar.visibility = View.GONE
+        binding.rvBottomSheetRecyclerView.visibility = View.GONE
+
+        binding.ivBottomSheetPlaceholderImage.visibility = View.VISIBLE
+        binding.tvBottomSheetPlaceholderMessage.visibility = View.VISIBLE
+        binding.tvBottomSheetPlaceholderMessage.text = message
+
+    }
+
+    private fun showLoading() {
+        binding.bottomSheetProgressBar.visibility = View.VISIBLE
+        binding.ivBottomSheetPlaceholderImage.visibility = View.GONE
+        binding.tvBottomSheetPlaceholderMessage.visibility = View.GONE
+        binding.rvBottomSheetRecyclerView.visibility = View.GONE
+    }
+
     private fun dpToPx(dp: Float, context: Context): Int {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
@@ -170,4 +297,5 @@ class AudioPlayerActivity : AppCompatActivity() {
             context.resources.displayMetrics
         ).toInt()
     }
+
 }
