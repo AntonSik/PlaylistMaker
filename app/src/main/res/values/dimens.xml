@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="titel_size">26sp</dimen>
-    <dimen name="search_text_size">20sp</dimen>
-    <dimen name="second_screen_text_size">18sp</dimen>
-    <dimen name="track_description_and_timing_size">11sp</dimen>
-    <dimen name="track_name_size">16sp</dimen>
+    <dimen name="text_size_26sp">26sp</dimen>
+    <dimen name="text_size_20sp">20sp</dimen>
+    <dimen name="text_size_18sp">18sp</dimen>
+    <dimen name="text_size_11sp">11sp</dimen>
+    <dimen name="text_size_16sp">16sp</dimen>
     <dimen name="button_search_activity_corners">54dp</dimen>
-    <dimen name="player_tv_text">13sp</dimen>
+    <dimen name="text_size_13sp">13sp</dimen>
     <dimen name="progress_bar_size">44dp</dimen>
     <dimen name="progress_bar_marginTop">140dp</dimen>
     <dimen name="fragment_placeholder_marginTop">106dp</dimen>
-    <dimen name="fragment_placeholder_text_size">19sp</dimen>
-    <dimen name="new_playlist_btn_text_size">14sp</dimen>
+    <dimen name="text_size_19sp">19sp</dimen>
+    <dimen name="text_size_14sp">14sp</dimen>
+    <dimen name="text_size_12sp">12sp</dimen>
+    <dimen name="text_size_22sp">22sp</dimen>
+    <dimen name="text_size_24sp">24sp</dimen>
     <dimen name="header_margin">4dp</dimen>
+    <dimen name="peek_height">240dp</dimen>
 </resources>

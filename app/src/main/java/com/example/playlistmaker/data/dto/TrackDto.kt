@@ -46,7 +46,7 @@ data class TrackDto(
                 releaseDate = source.readString() ?: "",
                 country = source.readString() ?: "",
                 previewUrl = source.readString() ?: "",
-                isFavorite = source.readBoolean() ?: false
+                isFavorite = source.readBoolean()
             )
         }
 

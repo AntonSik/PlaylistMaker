@@ -39,9 +39,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
 
-class PlaylistsCreatorFragment : Fragment() {
+open class PlaylistsCreatorFragment : Fragment() {
 
-    private lateinit var binding: FragmentPlaylistsCreatorBinding
+    lateinit var binding: FragmentPlaylistsCreatorBinding
     private lateinit var confirmCloseCreatingDialog: MaterialAlertDialogBuilder
     private val viewModel by viewModel<PlaylistsCreatorViewModel>()
     private var isCreateAllowed = false
@@ -147,6 +147,7 @@ class PlaylistsCreatorFragment : Fragment() {
                 requireContext().getString(R.string.playlist_created, binding.etTitle.text),
                 Toast.LENGTH_LONG
             ).show()
+
         }
 
     }
@@ -181,7 +182,7 @@ class PlaylistsCreatorFragment : Fragment() {
         return file.absolutePath
     }
 
-    private fun loadImage(): String? {
+    fun loadImage(): String? {
 
         val file = viewModel.getImagePath()?.let { File(it) }
 
@@ -216,11 +217,11 @@ class PlaylistsCreatorFragment : Fragment() {
             MaterialAlertDialogBuilder(requireContext(), R.style.DialogTheme)
                 .setTitle(R.string.confirm_ending_playlist_creating)
                 .setMessage(R.string.confirm_ending_playlist_creating_message)
-                .setNegativeButton(R.string.dialog_negative_btn) { dialog, which ->
+                .setNegativeButton(R.string.dialog_negative_btn) { dialog, _ ->
                     dialog.dismiss()
 
                 }
-                .setPositiveButton(R.string.dialog_positive_btn) { dialog, which ->
+                .setPositiveButton(R.string.dialog_positive_btn) { _, _ ->
                     navigateBack()
                 }
 

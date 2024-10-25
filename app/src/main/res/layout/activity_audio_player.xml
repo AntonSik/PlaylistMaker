@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSecondary"
+    android:background="?attr/colorPrimaryVariant"
     android:orientation="vertical"
     tools:context=".ui.audioPlayer.AudioPlayerActivity">
 
@@ -51,7 +51,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginHorizontal="8dp"
-                android:layout_marginTop="26sp"
+                android:layout_marginTop="26dp"
                 android:contentDescription="@string/content_description_cover"
                 android:scaleType="centerCrop"
                 app:layout_constraintDimensionRatio="h,1:1"
@@ -66,8 +66,8 @@
                 android:layout_marginHorizontal="8dp"
                 android:layout_marginTop="24dp"
                 android:fontFamily="@font/ys_display_medium"
-                android:textColor="?attr/colorOnSecondary"
-                android:textSize="22sp"
+                android:textColor="?attr/colorOnPrimary"
+                android:textSize="@dimen/text_size_22sp"
                 app:layout_constraintEnd_toStartOf="@id/rightBorder"
                 app:layout_constraintStart_toEndOf="@id/leftBorder"
                 app:layout_constraintTop_toBottomOf="@id/iv_cover"
@@ -80,8 +80,8 @@
                 android:layout_marginHorizontal="8dp"
                 android:layout_marginTop="12dp"
                 android:fontFamily="@font/ys_display_medium"
-                android:textColor="?attr/colorOnSecondary"
-                android:textSize="14sp"
+                android:textColor="?attr/colorOnPrimary"
+                android:textSize="@dimen/text_size_14sp"
                 app:layout_constraintEnd_toStartOf="@id/rightBorder"
                 app:layout_constraintStart_toEndOf="@id/leftBorder"
                 app:layout_constraintTop_toBottomOf="@id/tv_trackName"
@@ -107,7 +107,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginTop="28dp"
-                android:background="?attr/colorSecondary"
+                android:background="?attr/colorPrimaryVariant"
                 android:contentDescription="@string/content_description_play_btn"
                 android:enabled="false"
                 android:src="@drawable/play_vector"
@@ -136,8 +136,8 @@
                 android:layout_marginTop="4dp"
                 android:fontFamily="@font/ys_display_medium"
                 android:text="@string/progress_playing_placeholder"
-                android:textColor="?attr/colorOnSecondary"
-                android:textSize="14sp"
+                android:textColor="?attr/colorOnPrimary"
+                android:textSize="@dimen/text_size_14sp"
                 app:layout_constraintEnd_toStartOf="@id/rightBorder"
                 app:layout_constraintStart_toEndOf="@id/leftBorder"
                 app:layout_constraintTop_toBottomOf="@id/btn_play"
@@ -276,8 +276,8 @@
             android:fontFamily="@font/ys_display_medium"
             android:gravity="center"
             android:text="@string/add_to_playlist"
-            android:textColor="?attr/colorOnSecondary"
-            android:textSize="19sp" />
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="@dimen/text_size_19sp" />
 
         <Button
             android:id="@+id/btn_bottom_sheet_add_new_playlist"
@@ -285,11 +285,9 @@
             android:layout_height="36dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
-            android:backgroundTint="?attr/colorOnSecondary"
             android:fontFamily="@font/ys_display_medium"
             android:text="@string/new_playlist"
-            android:textColor="?attr/colorSecondary"
-            android:textSize="14sp"
+            android:textSize="@dimen/text_size_14sp"
             app:cornerRadius="54dp"/>
 
         <ProgressBar
