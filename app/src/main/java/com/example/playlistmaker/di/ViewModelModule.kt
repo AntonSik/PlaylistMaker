@@ -26,7 +26,6 @@ val viewModelModule = module {
 
     viewModel { (track: Track?) ->
         AudioPlayerViewModel(
-            context = androidContext(),
             track = track,
             playerInteractor = get(),
             favoriteTracksInteractor = get(),

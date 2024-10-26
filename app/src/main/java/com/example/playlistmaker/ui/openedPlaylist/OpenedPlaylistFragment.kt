@@ -203,6 +203,7 @@ class OpenedPlaylistFragment : Fragment() {
         }
         binding.tvBottomShare.setOnClickListener {
             if (clickDebounce()) {
+                bottomSheetMenuBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                 setupSharing()
             }
         }
@@ -369,14 +370,12 @@ class OpenedPlaylistFragment : Fragment() {
     private fun showLoading() {
         binding.rvRecyclerViewTracksHolder.visibility = View.GONE
         binding.tvBottomSheetPlaceholderMessage.visibility = View.GONE
-        binding.ivBottomSheetPlaceholderImage.visibility = View.GONE
         binding.bottomSheetProgressBar.visibility = View.VISIBLE
     }
 
     private fun showEmpty(message: String) {
         binding.rvRecyclerViewTracksHolder.visibility = View.GONE
         binding.tvBottomSheetPlaceholderMessage.visibility = View.VISIBLE
-        binding.ivBottomSheetPlaceholderImage.visibility = View.VISIBLE
         binding.bottomSheetProgressBar.visibility = View.GONE
 
         binding.tvBottomSheetPlaceholderMessage.text = message
@@ -385,7 +384,6 @@ class OpenedPlaylistFragment : Fragment() {
     private fun showContent(tracks: List<Track>) {
         binding.rvRecyclerViewTracksHolder.visibility = View.VISIBLE
         binding.tvBottomSheetPlaceholderMessage.visibility = View.GONE
-        binding.ivBottomSheetPlaceholderImage.visibility = View.GONE
         binding.bottomSheetProgressBar.visibility = View.GONE
 
         adapter?.tracks?.clear()

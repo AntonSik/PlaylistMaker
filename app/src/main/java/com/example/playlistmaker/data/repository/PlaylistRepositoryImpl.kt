@@ -55,7 +55,9 @@ class PlaylistRepositoryImpl(
 
         val trackIdsList: MutableList<Int> = gson.fromJson(playlist.trackIds, object :
             TypeToken<List<Int>>() {}.type)
-        trackIdsList.add(track.trackId)
+
+        trackIdsList.add(0, track.trackId)
+
         val updatedTrackIds = gson.toJson(trackIdsList)
         val updatedPlaylist = playlist.copy(
             trackIds = updatedTrackIds,
@@ -83,8 +85,8 @@ class PlaylistRepositoryImpl(
         val playlist = getPlaylistById(playlistId).trackIds
         val trackIdsList: List<Int> = gson.fromJson(playlist, object :
             TypeToken<List<Int>>() {}.type)
-
-        return playlistTrackDao.getTracksByIds(trackIdsList)
+        val tracks = playlistTrackDao.getTracksByIds(trackIdsList)
+        return tracks.sortedBy { track -> trackIdsList.indexOf(track.trackId) }
     }
 
     override suspend fun deleteTrackFromPlaylist(trackId: Int, playlistId: Int) {

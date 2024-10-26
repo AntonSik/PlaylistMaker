@@ -18,7 +18,6 @@ import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.audioPlayer.AudioPlayerViewModel
 import com.example.playlistmaker.ui.audioPlayer.models.PlayerScreenState
 import com.example.playlistmaker.ui.audioPlayer.models.PlayerState
-import com.example.playlistmaker.ui.media.models.PlaylistState
 import com.example.playlistmaker.ui.root.RootActivity
 import com.example.playlistmaker.ui.search.SearchFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -58,6 +57,14 @@ class AudioPlayerActivity : AppCompatActivity() {
             BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        overlay.visibility = View.VISIBLE
+                        overlay.alpha = 0.5f
+                        viewModel.playlistsLive.observe(this@AudioPlayerActivity) { playlists ->
+
+                            showContent(playlists)
+                        }
+                    }
 
                     BottomSheetBehavior.STATE_HIDDEN -> {
                         overlay.visibility = View.GONE
@@ -65,8 +72,9 @@ class AudioPlayerActivity : AppCompatActivity() {
 
                     else -> {
                         overlay.visibility = View.VISIBLE
-                        viewModel.stateLive.observe(this@AudioPlayerActivity) {
-                            render(it)
+                        viewModel.playlistsLive.observe(this@AudioPlayerActivity) { playlists ->
+
+                            showContent(playlists)
                         }
                     }
                 }
@@ -84,8 +92,9 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
         binding.rvBottomSheetRecyclerView.adapter = adapter
         viewModel.fillBottomSheet()
-        viewModel.stateLive.observe(this) {
-            render(it)
+        viewModel.playlistsLive.observe(this) { playlists ->
+
+            showContent(playlists)
         }
 
         viewModel.insertTrackStatusLive.observe(this) { insertTrackStatus ->
@@ -254,18 +263,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding.tvTimePlaying.isVisible = !loading
     }
 
-    private fun render(state: PlaylistState) {
-        when (state) {
-            is PlaylistState.Content -> showContent(state.playlists)
-            is PlaylistState.Empty -> showEmpty(state.message)
-            PlaylistState.Loading -> showLoading()
-        }
-    }
-
     private fun showContent(playlists: List<Playlist>) {
-        binding.bottomSheetProgressBar.visibility = View.GONE
-        binding.ivBottomSheetPlaceholderImage.visibility = View.GONE
-        binding.tvBottomSheetPlaceholderMessage.visibility = View.GONE
 
         binding.rvBottomSheetRecyclerView.visibility = View.VISIBLE
         adapter?.playlists?.clear()
@@ -273,22 +271,6 @@ class AudioPlayerActivity : AppCompatActivity() {
         adapter?.notifyDataSetChanged()
     }
 
-    private fun showEmpty(message: String) {
-        binding.bottomSheetProgressBar.visibility = View.GONE
-        binding.rvBottomSheetRecyclerView.visibility = View.GONE
-
-        binding.ivBottomSheetPlaceholderImage.visibility = View.VISIBLE
-        binding.tvBottomSheetPlaceholderMessage.visibility = View.VISIBLE
-        binding.tvBottomSheetPlaceholderMessage.text = message
-
-    }
-
-    private fun showLoading() {
-        binding.bottomSheetProgressBar.visibility = View.VISIBLE
-        binding.ivBottomSheetPlaceholderImage.visibility = View.GONE
-        binding.tvBottomSheetPlaceholderMessage.visibility = View.GONE
-        binding.rvBottomSheetRecyclerView.visibility = View.GONE
-    }
 
     private fun dpToPx(dp: Float, context: Context): Int {
         return TypedValue.applyDimension(

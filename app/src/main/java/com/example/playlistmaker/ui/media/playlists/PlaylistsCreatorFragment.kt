@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
@@ -99,10 +100,15 @@ open class PlaylistsCreatorFragment : Fragment() {
         })
 
         binding.ivPickerCover.setOnClickListener {
-            lifecycleScope.launch {
-                val readPermission = requester.request(Manifest.permission.READ_MEDIA_IMAGES)
 
-                readPermission.collect { resultReading ->
+            val readPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Manifest.permission.READ_MEDIA_IMAGES
+            } else {
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            }
+            val permissionRequester = requester.request(readPermission)
+            lifecycleScope.launch {
+                permissionRequester.collect { resultReading ->
                     when (resultReading) {
                         is PermissionResult.Granted -> {
                             pickPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
