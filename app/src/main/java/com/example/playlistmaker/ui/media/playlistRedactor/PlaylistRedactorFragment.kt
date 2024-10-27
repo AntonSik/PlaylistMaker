@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.playlistRedactor
+package com.example.playlistmaker.ui.media.playlistRedactor
 
 import android.content.Context
 import android.os.Bundle
@@ -12,7 +12,8 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.PlaylistModel
 import com.example.playlistmaker.presentation.media.PlaylistsCreatorViewModel
-import com.example.playlistmaker.ui.media.playlists.PlaylistsCreatorFragment
+import com.example.playlistmaker.ui.media.playlistCreator.PlaylistsCreatorFragment
+import com.example.playlistmaker.ui.root.BottomNavBarShower
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistRedactorFragment : PlaylistsCreatorFragment() {
@@ -28,7 +29,7 @@ class PlaylistRedactorFragment : PlaylistsCreatorFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        (activity as? BottomNavBarShower)?.hideNavBar()
         binding.tvHeader.text = getString(R.string.redacting_playlist_header)
         binding.createPlaylistBtn.text = getString(R.string.redactor_playlist_save)
 

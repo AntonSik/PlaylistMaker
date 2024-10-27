@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.api.PlaylistInteractor
 import com.example.playlistmaker.domain.models.Playlist
-import com.example.playlistmaker.ui.media.models.PlaylistState
+import com.example.playlistmaker.ui.media.playlists.models.PlaylistState
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 

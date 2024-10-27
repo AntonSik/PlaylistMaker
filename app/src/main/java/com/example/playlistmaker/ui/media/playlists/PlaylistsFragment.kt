@@ -11,8 +11,9 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.presentation.media.PlaylistsViewModel
-import com.example.playlistmaker.ui.media.models.PlaylistState
-import com.example.playlistmaker.ui.openedPlaylist.OpenedPlaylistFragment
+import com.example.playlistmaker.ui.media.playlists.models.PlaylistState
+import com.example.playlistmaker.ui.media.openedPlaylist.OpenedPlaylistFragment
+import com.example.playlistmaker.ui.media.playlistCreator.PlaylistsCreatorFragment
 import com.example.playlistmaker.ui.root.BottomNavBarShower
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -21,8 +22,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class PlaylistsFragment : Fragment() {
     companion object {
         fun newInstance() = PlaylistsFragment()
-        const val PREVIOUS_SCREEN = "previous screen"
-        const val PREVIOUS_SCREEN_IS_PLAYLIST = "PlaylistsFragment"
+
         const val CLICKED_PLAYLIST_ID = "selectedPlaylist"
         private const val CLICK_DEBOUNCE_DELAY = 2000L
     }
@@ -43,6 +43,7 @@ class PlaylistsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (activity as? BottomNavBarShower)?.showNavbar()
         init()
 
         viewModel.fillData()
@@ -53,11 +54,7 @@ class PlaylistsFragment : Fragment() {
         binding.bNewPlaylistBtn.setOnClickListener {
             (activity as? BottomNavBarShower)?.hideNavBar()
 
-            val fragment = PlaylistsCreatorFragment.newInstance().apply {
-                arguments = Bundle().apply {
-                    putString(PREVIOUS_SCREEN, PREVIOUS_SCREEN_IS_PLAYLIST)
-                }
-            }
+            val fragment = PlaylistsCreatorFragment.newInstance()
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.rootFragmentContainerView, fragment)
                 .addToBackStack(null)

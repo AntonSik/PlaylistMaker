@@ -5,7 +5,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.media.playlists.PlaylistsCreatorFragment">
+        tools:context=".ui.media.playlistCreator.PlaylistsCreatorFragment">
 
         <ImageButton
             android:id="@+id/ib_back"

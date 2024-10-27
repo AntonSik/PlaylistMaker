@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.media.playlists
+package com.example.playlistmaker.ui.media.playlistCreator
 
 import android.Manifest
 import android.content.Context
@@ -52,8 +52,6 @@ open class PlaylistsCreatorFragment : Fragment() {
 
     companion object {
         fun newInstance() = PlaylistsCreatorFragment()
-        const val PREVIOUS_SCREEN = "previous screen"
-        const val PREVIOUS_SCREEN_IS_AUDIO_PLAYER = "AudioPlayerActivity"
 
     }
 
@@ -69,6 +67,7 @@ open class PlaylistsCreatorFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (activity as? BottomNavBarShower)?.hideNavBar()
         setUpDialog()
 
         val pickPhoto =
@@ -258,17 +257,7 @@ open class PlaylistsCreatorFragment : Fragment() {
     }
 
     private fun navigateBack() {
-        val previousScreen = arguments?.getString(PREVIOUS_SCREEN)
-        when (previousScreen) {
-            PREVIOUS_SCREEN_IS_AUDIO_PLAYER -> {
-                requireActivity().finish()
-            }
-
-            else -> {
-                (activity as? BottomNavBarShower)?.showNavbar()
-                requireActivity().supportFragmentManager.popBackStack()
-            }
-        }
+        requireActivity().supportFragmentManager.popBackStack()
     }
 
     private fun dpToPx(dp: Float, context: Context): Int {

@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.openedPlaylist
+package com.example.playlistmaker.ui.media.openedPlaylist
 
 import android.content.Context
 import android.content.Intent
@@ -21,11 +21,11 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentOpenedPlaylistBinding
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.presentation.openedPlaylist.OpenedPlaylistViewModel
-import com.example.playlistmaker.ui.audioPlayer.AudioPlayerActivity
-import com.example.playlistmaker.ui.openedPlaylist.models.PlaylistScreenState
-import com.example.playlistmaker.ui.openedPlaylist.models.PlaylistTracksState
-import com.example.playlistmaker.ui.playlistRedactor.PlaylistRedactorFragment
+import com.example.playlistmaker.presentation.media.OpenedPlaylistViewModel
+import com.example.playlistmaker.ui.audioPlayer.AudioPlayerFragment
+import com.example.playlistmaker.ui.media.openedPlaylist.models.PlaylistScreenState
+import com.example.playlistmaker.ui.media.openedPlaylist.models.PlaylistTracksState
+import com.example.playlistmaker.ui.media.playlistRedactor.PlaylistRedactorFragment
 import com.example.playlistmaker.ui.root.BottomNavBarShower
 import com.example.playlistmaker.ui.search.TrackAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -68,6 +68,7 @@ class OpenedPlaylistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (activity as? BottomNavBarShower)?.hideNavBar()
         val selectedPlaylistId: Int = arguments?.getInt(CLICKED_PLAYLIST_ID) ?: return
 
         viewModel = getViewModel { parametersOf(selectedPlaylistId) }
@@ -243,11 +244,17 @@ class OpenedPlaylistFragment : Fragment() {
         adapter = TrackAdapter(object : TrackAdapter.OnClickListenerItem {
 
             override fun onItemClick(track: Track) {
-                if (clickDebounce()) {
-                    val playerIntent = Intent(requireContext(), AudioPlayerActivity::class.java)
-                    playerIntent.putExtra(CLICKED_ITEM, track)
-                    startActivity(playerIntent)
+
+                val fragment = AudioPlayerFragment.newInstance().apply {
+                    arguments = Bundle().apply {
+                        putParcelable(CLICKED_ITEM, track)
+                    }
                 }
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.rootFragmentContainerView, fragment)
+                    .addToBackStack(null)
+                    .commit()
+
             }
         }, object : TrackAdapter.OnLongClickListenerItem {
             override fun onItemLongClick(track: Track): Boolean {

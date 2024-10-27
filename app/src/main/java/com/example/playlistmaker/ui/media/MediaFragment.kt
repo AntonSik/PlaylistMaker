@@ -8,9 +8,10 @@ import androidx.fragment.app.Fragment
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentMediaBinding
 import com.example.playlistmaker.ui.media.models.MediaViewPagerAdapter
+import com.example.playlistmaker.ui.root.BottomNavBarShower
 import com.google.android.material.tabs.TabLayoutMediator
 
-class MediaFragment: Fragment() {
+class MediaFragment : Fragment() {
 
     private lateinit var binding: FragmentMediaBinding
     private lateinit var tabMediator: TabLayoutMediator
@@ -20,16 +21,18 @@ class MediaFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentMediaBinding.inflate(inflater,container,false)
+        binding = FragmentMediaBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (activity as? BottomNavBarShower)?.showNavbar()
         binding.viewPager.adapter = MediaViewPagerAdapter(
             fragmentManager = childFragmentManager,
-            lifecycle =  lifecycle)
+            lifecycle = lifecycle
+        )
 
         tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = when (position) {

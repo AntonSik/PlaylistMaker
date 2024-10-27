@@ -1,4 +1,4 @@
-package com.example.playlistmaker.presentation.openedPlaylist
+package com.example.playlistmaker.presentation.media
 
 import android.content.Context
 import androidx.lifecycle.LiveData
@@ -8,8 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.api.PlaylistInteractor
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.ui.openedPlaylist.models.PlaylistScreenState
-import com.example.playlistmaker.ui.openedPlaylist.models.PlaylistTracksState
+import com.example.playlistmaker.ui.media.openedPlaylist.models.PlaylistScreenState
+import com.example.playlistmaker.ui.media.openedPlaylist.models.PlaylistTracksState
 import kotlinx.coroutines.launch
 
 class OpenedPlaylistViewModel(
