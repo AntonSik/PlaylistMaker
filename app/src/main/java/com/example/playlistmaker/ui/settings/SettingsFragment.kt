@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.playlistmaker.databinding.FragmentSettingsBinding
 import com.example.playlistmaker.presentation.settings.SettingsViewModel
+import com.example.playlistmaker.ui.root.BottomNavBarShower
 import com.example.playlistmaker.utils.App
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -29,7 +30,7 @@ class SettingsFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        (activity as? BottomNavBarShower)?.showNavbar()
         binding.themeSwitcher.isChecked = viewModel.getTheme()
 
 

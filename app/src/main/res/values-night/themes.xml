@@ -3,22 +3,16 @@
     <style name="Base.Theme.PlaylistMaker" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
-        <item name="colorPrimary">@color/YP_black</item>
+        <item name="colorPrimary">@color/YP_blue</item>
         <item name="colorPrimaryVariant">@color/YP_black</item>
         <item name="colorOnPrimary">@color/white</item>
+
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/YP_black</item>
-        <item name="colorSecondaryVariant">@color/black</item>
+        <item name="colorSecondary">@color/white</item>
+        <item name="colorSecondaryVariant">@color/YP_black</item>
         <item name="colorOnSecondary">@color/white</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">@color/YP_black</item>
 
-    </style>
-
-    <style name="ThemeOfTrackDescription" parent="Base.Theme.PlaylistMaker">
-        <item name="colorOnSecondary">@color/white</item>
-    </style>
-    <style name="Update_btn_theme" parent="Base.Theme.PlaylistMaker">
-        <item name="colorOnSecondary">@color/white</item>
     </style>
 </resources>

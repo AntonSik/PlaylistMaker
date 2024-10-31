@@ -10,9 +10,20 @@
         <item name="android:backgroundTint">@color/white</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
         <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">@dimen/search_text_size</item>
+        <item name="android:textSize">@dimen/text_size_20sp</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
+    </style>
+
+    <style name="playlist_bs_style">
+        <item name="android:layout_gravity">start</item>
+        <item name="android:paddingHorizontal">16dp</item>
+        <item name="android:paddingVertical">21dp</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/text_size_16sp</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:background">?attr/colorPrimaryVariant</item>
+
     </style>
 
     <style name="SettingsMenuStyle">
@@ -22,10 +33,10 @@
         <item name="android:paddingHorizontal">16dp</item>
         <item name="android:paddingTop">18dp</item>
         <item name="android:paddingBottom">18dp</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">@dimen/second_screen_text_size</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/text_size_18sp</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
-        <item name="android:background">?attr/colorSecondary</item>
+        <item name="android:background">?attr/colorPrimaryVariant</item>
     </style>
 
     <style name="switchStyle" parent="Theme.AppCompat.Light">
@@ -36,9 +47,9 @@
         <item name="android:paddingTop">18dp</item>
         <item name="android:paddingBottom">18dp</item>
         <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">@dimen/second_screen_text_size</item>
+        <item name="android:textSize">@dimen/text_size_18sp</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
-        <item name="android:background">?attr/colorSecondary</item>
+        <item name="android:background">?attr/colorPrimaryVariant</item>
         <item name="colorControlActivated">@color/YP_blue</item>
         <item name="trackTint">@color/YP_Light_Gray</item>
         <item name="thumbTint">@color/just_gray</item>
@@ -57,7 +68,7 @@
     </style>
 
     <style name="item_track_style">
-        <item name="android:background">?attr/colorSecondary</item>
+        <item name="android:background">?attr/colorPrimaryVariant</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">60dp</item>
         <item name="android:paddingHorizontal">16dp</item>
@@ -71,8 +82,8 @@
         <item name="android:paddingTop">9dp</item>
         <item name="android:paddingHorizontal">2dp</item>
         <item name="android:gravity">end</item>
-        <item name="android:textColor">?attr/colorOnSecondary</item>
-        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/text_size_13sp</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
@@ -89,10 +100,10 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">56dp</item>
         <item name="android:layout_gravity">center</item>
-        <item name="android:backgroundTint">?attr/colorOnSecondary</item>
+        <item name="android:backgroundTint">?attr/colorSecondary</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
-        <item name="android:textColor">?attr/colorSecondary</item>
-        <item name="android:textSize">@dimen/new_playlist_btn_text_size</item>
+        <item name="android:textColor">?attr/colorPrimaryVariant</item>
+        <item name="android:textSize">@dimen/text_size_14sp</item>
     </style>
 
     <style name="placeholder">
@@ -114,17 +125,17 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
-        <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="android:textAlignment">center</item>
         <item name="android:lineHeight">22dp</item>
-        <item name="android:textSize">@dimen/fragment_placeholder_text_size</item>
+        <item name="android:textSize">@dimen/text_size_19sp</item>
 
     </style>
     <style name="header_style">
         <item name="android:fontFamily">font/ys_display_medium</item>
-        <item name="android:textSize">@dimen/titel_size</item>
-        <item name="android:textColor">?attr/colorOnSecondary</item>
-        <item name="android:background">?attr/colorSecondary</item>
+        <item name="android:textSize">@dimen/text_size_26sp</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:background">?attr/colorPrimaryVariant</item>
         <item name="android:paddingStart">12dp</item>
         <item name="android:paddingTop">10dp</item>
         <item name="android:paddingBottom">12dp</item>

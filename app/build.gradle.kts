@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -41,6 +42,9 @@ android {
 
 dependencies {
     implementation("androidx.compose.ui:ui-desktop:1.6.7")
+    implementation("androidx.legacy:legacy-support-v4:1.0.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.4")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.4")
     val roomVersion = "2.6.1"
 
     implementation("androidx.core:core-ktx:1.9.0")

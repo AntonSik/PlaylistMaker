@@ -8,12 +8,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityRootBinding
 
-class RootActivity : AppCompatActivity(),BottomNavBarShower {
-
-    companion object{
-        const val NAVIGATE_TO_CREATE = "Navigate to create"
-        const val PREVIOUS_SCREEN = "previous screen"
-    }
+class RootActivity : AppCompatActivity(), BottomNavBarShower {
 
     private lateinit var binding: ActivityRootBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,19 +17,12 @@ class RootActivity : AppCompatActivity(),BottomNavBarShower {
         binding = ActivityRootBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
         val navController = navHostFragment.navController
 
         binding.bottomNavigationView.setupWithNavController(navController)
 
-        val navigateTo = intent.getIntExtra(NAVIGATE_TO_CREATE,-1)
-        val previousScreen = intent.getStringExtra(PREVIOUS_SCREEN)
-        if (navigateTo == 2){
-            hideNavBar()
-            val bundle = Bundle()
-            bundle.putString(PREVIOUS_SCREEN, previousScreen)
-            navController.navigate(R.id.playlistsCreatorFragment, bundle)
-        }
     }
 
     override fun showNavbar() {
@@ -46,4 +34,5 @@ class RootActivity : AppCompatActivity(),BottomNavBarShower {
         binding.bottomNavigationView.visibility = View.GONE
         binding.vTopView.visibility = View.GONE
     }
+
 }

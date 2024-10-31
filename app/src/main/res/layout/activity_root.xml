@@ -22,7 +22,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_centerHorizontal="true"
-        android:theme="@style/ThemeOfTrackDescription"
         android:background="?attr/colorOnSecondary"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"/>
 
@@ -36,8 +35,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:itemIconTint="@color/navigation_item_color"
         app:itemTextColor="@color/navigation_item_color"
-        app:itemBackground="?attr/colorSecondary"
-        android:background="?attr/colorSecondary"
+        app:itemBackground="?attr/colorPrimaryVariant"
+        android:background="?attr/colorPrimaryVariant"
         app:menu="@menu/navigation_menue" />
 
 

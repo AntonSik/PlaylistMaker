@@ -1,6 +1,6 @@
 package com.example.playlistmaker.ui.search
 
-import android.content.Intent
+
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,7 +14,8 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.search.SearchTracksViewModel
-import com.example.playlistmaker.ui.audioPlayer.AudioPlayerActivity
+import com.example.playlistmaker.ui.audioPlayer.AudioPlayerFragment
+import com.example.playlistmaker.ui.root.BottomNavBarShower
 import com.example.playlistmaker.ui.search.models.SearchState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -22,7 +23,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
     companion object {
-        const val CLICKED_ITEM = "clicked track"
+        private const val CLICKED_ITEM = "clicked track"
         private const val CLICK_DEBOUNCE_DELAY = 2000L
     }
 
@@ -40,7 +41,7 @@ class SearchFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
+        (activity as? BottomNavBarShower)?.showNavbar()
         binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
 
@@ -140,12 +141,17 @@ class SearchFragment : Fragment() {
         trackAdapter = TrackAdapter(object : TrackAdapter.OnClickListenerItem {
 
             override fun onItemClick(track: Track) {
-                if (clickDebounce()) {
-                    viewModel.addToHistory(track)
-                    val playerIntent = Intent(requireContext(), AudioPlayerActivity::class.java)
-                    playerIntent.putExtra(CLICKED_ITEM, track)
-                    startActivity(playerIntent)
-                }
+
+                    val fragment = AudioPlayerFragment.newInstance().apply {
+                        arguments = Bundle().apply {
+                            putParcelable(CLICKED_ITEM,track)
+                        }
+                    }
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.rootFragmentContainerView, fragment)
+                        .addToBackStack(null)
+                        .commit()
+
             }
         })
 

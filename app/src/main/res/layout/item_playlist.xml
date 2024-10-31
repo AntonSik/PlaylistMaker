@@ -10,15 +10,16 @@
     <ImageView
         android:id="@+id/iv_cover_item_pleylist"
         android:layout_width="160dp"
-        android:layout_height="160dp"/>
+        android:layout_height="160dp"
+        android:contentDescription="TODO" />
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="16dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textSize="12sp"
-        android:textColor="?attr/colorOnSecondary"
+        android:textSize="@dimen/text_size_12sp"
+        android:textColor="?attr/colorOnPrimary"
         android:fontFamily="@font/ys_display_regular"
         tools:text="Плейлист №1"/>
     <TextView
@@ -27,8 +28,8 @@
         android:layout_height="16dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textSize="12sp"
-        android:textColor="?attr/colorOnSecondary"
+        android:textSize="@dimen/text_size_12sp"
+        android:textColor="?attr/colorOnPrimary"
         android:fontFamily="@font/ys_display_regular"
         tools:text="99 треков"/>
 </LinearLayout>

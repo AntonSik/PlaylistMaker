@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.media.playlists
+package com.example.playlistmaker.ui.media.playlistCreator
 
 import android.Manifest
 import android.content.Context
@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
@@ -39,9 +40,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
 
-class PlaylistsCreatorFragment : Fragment() {
+open class PlaylistsCreatorFragment : Fragment() {
 
-    private lateinit var binding: FragmentPlaylistsCreatorBinding
+    lateinit var binding: FragmentPlaylistsCreatorBinding
     private lateinit var confirmCloseCreatingDialog: MaterialAlertDialogBuilder
     private val viewModel by viewModel<PlaylistsCreatorViewModel>()
     private var isCreateAllowed = false
@@ -51,8 +52,6 @@ class PlaylistsCreatorFragment : Fragment() {
 
     companion object {
         fun newInstance() = PlaylistsCreatorFragment()
-        const val PREVIOUS_SCREEN = "previous screen"
-        const val PREVIOUS_SCREEN_IS_AUDIO_PLAYER = "AudioPlayerActivity"
 
     }
 
@@ -68,6 +67,7 @@ class PlaylistsCreatorFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (activity as? BottomNavBarShower)?.hideNavBar()
         setUpDialog()
 
         val pickPhoto =
@@ -99,10 +99,15 @@ class PlaylistsCreatorFragment : Fragment() {
         })
 
         binding.ivPickerCover.setOnClickListener {
-            lifecycleScope.launch {
-                val readPermission = requester.request(Manifest.permission.READ_MEDIA_IMAGES)
 
-                readPermission.collect { resultReading ->
+            val readPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Manifest.permission.READ_MEDIA_IMAGES
+            } else {
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            }
+            val permissionRequester = requester.request(readPermission)
+            lifecycleScope.launch {
+                permissionRequester.collect { resultReading ->
                     when (resultReading) {
                         is PermissionResult.Granted -> {
                             pickPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
@@ -147,6 +152,7 @@ class PlaylistsCreatorFragment : Fragment() {
                 requireContext().getString(R.string.playlist_created, binding.etTitle.text),
                 Toast.LENGTH_LONG
             ).show()
+
         }
 
     }
@@ -181,7 +187,7 @@ class PlaylistsCreatorFragment : Fragment() {
         return file.absolutePath
     }
 
-    private fun loadImage(): String? {
+    fun loadImage(): String? {
 
         val file = viewModel.getImagePath()?.let { File(it) }
 
@@ -216,11 +222,11 @@ class PlaylistsCreatorFragment : Fragment() {
             MaterialAlertDialogBuilder(requireContext(), R.style.DialogTheme)
                 .setTitle(R.string.confirm_ending_playlist_creating)
                 .setMessage(R.string.confirm_ending_playlist_creating_message)
-                .setNegativeButton(R.string.dialog_negative_btn) { dialog, which ->
+                .setNegativeButton(R.string.dialog_negative_btn) { dialog, _ ->
                     dialog.dismiss()
 
                 }
-                .setPositiveButton(R.string.dialog_positive_btn) { dialog, which ->
+                .setPositiveButton(R.string.dialog_positive_btn) { _, _ ->
                     navigateBack()
                 }
 
@@ -251,17 +257,7 @@ class PlaylistsCreatorFragment : Fragment() {
     }
 
     private fun navigateBack() {
-        val previousScreen = arguments?.getString(PREVIOUS_SCREEN)
-        when (previousScreen) {
-            PREVIOUS_SCREEN_IS_AUDIO_PLAYER -> {
-                requireActivity().finish()
-            }
-
-            else -> {
-                (activity as? BottomNavBarShower)?.showNavbar()
-                requireActivity().supportFragmentManager.popBackStack()
-            }
-        }
+        requireActivity().supportFragmentManager.popBackStack()
     }
 
     private fun dpToPx(dp: Float, context: Context): Int {

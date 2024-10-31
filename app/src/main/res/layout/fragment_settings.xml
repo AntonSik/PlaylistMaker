@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/colorSecondary"
+    android:background="?attr/colorPrimaryVariant"
     android:orientation="vertical"
     tools:context=".ui.settings.SettingsFragment" >
 
@@ -29,7 +29,7 @@
             android:id="@+id/themeSwitcher"
             style="@style/switchStyle"
             android:text="@string/dark_theme"
-            android:textColor="?attr/colorOnSecondary" />
+            android:textColor="?attr/colorOnPrimary" />
 
         <TextView
             android:id="@+id/share"
